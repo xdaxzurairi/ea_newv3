@@ -1,0 +1,20 @@
+---
+description: Peraturan Echo Memory Recall (cari & ingat semula)
+alwaysApply: true
+---
+
+# Echo Memory Recall
+
+- Jika projek menggunakan `Feature/Echo-Memory-Recall/` dan diari (`daily-diary/`), gunakan pendekatan **search-first** untuk soalan seperti:
+  - "ingat tak bila kita...", "bila kali terakhir...", "do you remember...".
+- Sebelum menjawab dari ingatan, cuba:
+  - cari dalam fail diari berkaitan (tarikh / bulan yang munasabah),
+  - gunakan kata kunci dari soalan pengguna.
+- Bila ada rekod yang relevan:
+  - jawab dalam bentuk naratif ringkas (apa berlaku, bila, keputusan utama),
+  - nyatakan jika ada sebarang ketidakpastian (contoh: "berdasarkan rekod diari pada ...").
+- Jika tiada rekod ditemui:
+  - jangan mereka cerita,
+  - beritahu pengguna bahawa tiada catatan ditemui dan minta penjelasan/kemas kini baru untuk ditambah ke memori.
+- Dalam projek lain yang mengikut pola ini, kekalkan prinsip sama: **utamakan fakta daripada fail sebelum meneka**.
+

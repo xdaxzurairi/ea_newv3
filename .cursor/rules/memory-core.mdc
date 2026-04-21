@@ -1,0 +1,21 @@
+---
+description: Panduan global MemoryCore untuk AI
+alwaysApply: true
+---
+
+# MemoryCore – Peraturan Global
+
+- Jawapan utama hendaklah dalam **Bahasa Melayu**, kecuali pengguna minta selain.
+- Utamakan **kod moden dan ringkas**, ikut amalan terbaik semasa (security, performance, UI/UX).
+- Untuk projek PHP, utamakan **PDO** dengan prepared statement berbanding `mysql_*` lama atau ODBC mentah.
+- Untuk aplikasi web, utamakan paparan **mesra pengguna (mesra user)**: responsif, jelas, dan ada maklum balas (toast/alert) yang berguna.
+- Bila wujud *skill* seperti `diba`, `diba-memory`, atau lain dalam projek ini, **guna skill tersebut** bila berkaitan (contoh: design UI, ingatan jangka panjang, identiti projek).
+- Jangan dedah atau ulang nilai sensitif dari `config.php` atau environment (contoh: kata laluan DB) dalam jawapan kepada pengguna.
+- Bila menulis dokumentasi, gunakan gaya **ringkas, terus, dan praktikal**, fokus kepada langkah yang perlu dibuat pengguna.
+- Anggap struktur projek ini sebagai **AI MemoryCore** seperti dalam README: `master-memory.md`, `main/identity-core.md`, `main/relationship-memory.md`, `main/current-session.md`, `daily-diary/`, dan folder `Feature/` untuk fungsi tambahan.
+- Hormati **protokol komunikasi** MemoryCore: bila pengguna sebut arahan seperti `save`, `update memory`, `review growth`, `new [type] project`, `load project [name]`, `copy plan`, dsb., baca fail protokol berkaitan dalam projek ini dan ikut langkah yang diterangkan di situ.
+- Bila bekerja dalam projek ini, bantu pengguna menjadikan Diba lebih **evolve & sistematik** dengan:
+  - mencadangkan penggunaan `daily-diary` untuk rekod sesi penting,
+  - menggunakan `relationship-memory.md` untuk keutamaan pengguna jangka panjang,
+  - memanfaatkan sistem projek LRU, auto-commit, dan work-plan jika sudah dipasang dalam folder `Feature/`.
+

@@ -1,0 +1,21 @@
+---
+description: Peraturan Work – Plan Execution System (laksana plan projek)
+alwaysApply: true
+---
+
+# Work – Plan Execution System
+
+- Jika projek mempunyai `Feature/Work-Plan-Execution/`, gunakan sistem ini bila:
+  - pengguna minta tukar hasil “plan mode” kepada checklist boleh laksana, atau
+  - pengguna sebut `copy plan`, `append plan`, `resume plan`.
+- Pastikan fail plan (contoh `project-plan.md`) disusun sebagai:
+  - langkah bertanda `[ ]` untuk tugasan belum siap,
+  - `[x]` untuk tugasan siap,
+  - kumpulkan mengikut fasa jika dinyatakan dalam protokol.
+- Bila bekerja mengikut plan:
+  - sebelum buat perubahan besar, kenal pasti tugasan `[ ]` yang sedang dilaksana,
+  - selepas siap, tanda sebagai `[x]` dan (jika Auto-Commit dipasang) cadangkan commit dengan mesej yang merujuk tugasan tersebut.
+- Untuk projek lain, kekalkan tabiat ini supaya:
+  - pelaksanaan sentiasa selari dengan plan asal,
+  - mudah untuk sambung semula kerja selepas rehat atau reset konteks.
+

@@ -1,0 +1,20 @@
+---
+description: Peraturan Save Diary System (diari sesi harian)
+alwaysApply: true
+---
+
+# Save Diary System
+
+- Jika terdapat folder `daily-diary/` atau `Feature/Save-Diary-System/`, anggap sistem diari wujud atau boleh dipasang.
+- Apabila pengguna menyebut arahan seperti `save diary`, `tulis diari`, atau merujuk fail dalam sistem ini:
+  - baca `daily-diary-protocol.md` dan/atau `install-save-diary.md`,
+  - ringkaskan sesi terkini dalam bentuk yang menepati format yang dinyatakan di situ.
+- Galakkan pengguna menyimpan entri diari untuk:
+  - keputusan penting,
+  - perubahan besar pada projek,
+  - pembelajaran baru tentang keutamaan pengguna.
+- Pastikan ringkasan diari:
+  - fokus kepada fakta penting (apa dibuat, kenapa, apa tinggal),
+  - elakkan maklumat terlalu sensitif melainkan pengguna minta secara jelas.
+- Bila struktur arkib bulanan digunakan, patuhi susunan folder yang diterangkan dalam protokol agar diari mudah dicari semula.
+

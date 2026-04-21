@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"//10.0.36.127/webs/ea_newv3\" rev-parse --show-toplevel)",
+      "Bash(node:*)"
+    ]
+  }
+}

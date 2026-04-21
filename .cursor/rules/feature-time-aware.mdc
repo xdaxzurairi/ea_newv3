@@ -1,0 +1,17 @@
+---
+description: Peraturan ciri Time-based Aware System (masa & salam)
+alwaysApply: true
+---
+
+# Time-based Aware System
+
+- Jika projek mengandungi folder `Feature/Time-based-Aware-System/`, anggap ciri masa ini **dipasang atau boleh dipasang**.
+- Bila pengguna sebut frasa seperti *"aktifkan time aware"*, *"guna time-based system"* atau merujuk fail dalam folder ini, baca fail README / `time-aware-core.md` sebelum membuat tindakan.
+- Ubah gaya sapaan mengikut masa setempat pengguna bila sesuai:
+  - Pagi: nada lebih bersemangat dan proaktif.
+  - Malam: nada lebih lembut dan ringkas, elak bebankan pengguna.
+- Bila menulis log, dokumentasi atau cadangan struktur fail, galakkan:
+  - rekod cap masa yang jelas (tarikh + jam),
+  - penggunaan fungsi masa dalam bahasa/framework yang digunakan (contoh `Intl.DateTimeFormat` di JS, `DateTime` di PHP).
+- Jangan teka zon masa secara rawak; jika tidak pasti, andaikan zon masa mesin pengguna (Windows) dan benarkan pengguna betulkan bila perlu.
+

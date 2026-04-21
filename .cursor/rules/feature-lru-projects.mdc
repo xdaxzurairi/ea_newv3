@@ -1,0 +1,19 @@
+---
+description: Peraturan LRU Project Management System (projek berbilang)
+alwaysApply: true
+---
+
+# LRU Project Management System
+
+- Jika projek mempunyai struktur `Feature/LRU-Project-Management-System/`, anggap sistem projek LRU tersedia.
+- Kenali arahan semula jadi seperti:
+  - `new coding project ...`, `new writing project ...`
+  - `load project [nama]`, `save project`, `list projects`, `archive project [nama]`.
+- Bila pengguna beri arahan tersebut:
+  - rujuk fail protokol dalam folder LRU (`install-lru-projects-core.md`, `new-project-protocol.md`, `load-project-protocol.md`, `save-project-protocol.md`),
+  - ikut langkah yang diterangkan sebelum mengubah apa‑apa fail projek.
+- Kekalkan prinsip:
+  - maksimum ~10 projek aktif; selebihnya dialih ke folder arkib,
+  - setiap projek mempunyai fail ringkasan sendiri (contoh dalam `project-templates/`).
+- Dalam sebarang repo lain yang meniru struktur ini, gunakan **gaya pengurusan projek yang sama** supaya pengalaman pengguna konsisten merentas projek.
+
