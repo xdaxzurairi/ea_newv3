@@ -1,0 +1,22 @@
+# Credentials & Environment
+.env
+
+# Upload temp files
+uploads/temp/*
+!uploads/temp/.gitkeep
+
+# Work request uploads (fail pengguna — jangan commit)
+uploads/work_request/*
+!uploads/work_request/.gitkeep
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# PHP logs
+*.log

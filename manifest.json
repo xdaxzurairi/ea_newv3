@@ -1,0 +1,100 @@
+{
+    "name": "e-Aduan v3 – Sistem Aduan Fasiliti UiTM",
+    "short_name": "e-Aduan",
+    "description": "Sistem pengurusan aduan fasiliti Universiti Teknologi MARA. Laporkan kerosakan dengan mudah dan pantau status pembaikan.",
+    "start_url": "/ea_newv3/",
+    "scope": "/ea_newv3/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#5B2D8E",
+    "background_color": "#F5F3F7",
+    "lang": "ms",
+    "dir": "ltr",
+    "categories": ["utilities", "productivity"],
+    "icons": [
+        {
+            "src": "/ea_newv3/assets/icons/icon-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-128x128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-152x152.png",
+            "sizes": "152x152",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-maskable-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/ea_newv3/assets/icons/icon-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Lapor Aduan Baru",
+            "short_name": "Lapor",
+            "url": "/ea_newv3/pages/borang.php",
+            "icons": [
+                {
+                    "src": "/ea_newv3/assets/icons/icon-96x96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Semak Status Aduan",
+            "short_name": "Semak",
+            "url": "/ea_newv3/pages/semak.php",
+            "icons": [
+                {
+                    "src": "/ea_newv3/assets/icons/icon-96x96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ]
+}
