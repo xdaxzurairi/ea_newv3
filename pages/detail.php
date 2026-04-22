@@ -229,16 +229,10 @@ require_once __DIR__ . '/../includes/header.php';
 
         <?php
         $foto_indexes = [];
-        try {
-            $foto_rows = dbFetchAll(
-                "SELECT foto_index, file_size FROM wr_photos WHERE wr_id = ? ORDER BY foto_index",
-                [$wr_id]
-            );
-            foreach ($foto_rows as $fr) {
-                $foto_indexes[] = (int)$fr['foto_index'];
+        for ($fi = 1; $fi <= 3; $fi++) {
+            if (!empty($wr['foto' . $fi])) {
+                $foto_indexes[] = $fi;
             }
-        } catch (Exception $e) {
-            // Jadual wr_photos belum wujud atau ralat lain — abaikan
         }
         if (!empty($foto_indexes)): ?>
         <div class="ea-sec-hdr mb-2"><i class="bi bi-camera"></i> Gambar Kerosakan</div>

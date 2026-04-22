@@ -1,6 +1,6 @@
 <?php
 /**
- * eAduan v3 – Serve Foto Kerosakan dari DB
+ * eAduan v3 – Serve Foto Kerosakan dari filesystem
  * ?wr_id=X&idx=Y  (idx: 1, 2, atau 3)
  */
 session_start();
@@ -19,20 +19,31 @@ if ($wr_id <= 0 || $idx < 1 || $idx > 3) {
     exit;
 }
 
-$row = dbFetchOne(
-    "SELECT foto_data, mime_type FROM wr_photos WHERE wr_id = ? AND foto_index = ?",
-    [$wr_id, $idx]
-);
+$col = 'foto' . $idx;
+$row = dbFetchOne("SELECT {$col} AS filename FROM wr WHERE wr_id = ?", [$wr_id]);
 
-if (!$row || empty($row['foto_data'])) {
+if (!$row || empty($row['filename'])) {
     http_response_code(404);
     exit;
 }
 
-$mime = $row['mime_type'] ?: 'image/jpeg';
-$data = is_resource($row['foto_data']) ? stream_get_contents($row['foto_data']) : $row['foto_data'];
+$filename = basename($row['filename']);
+$path     = __DIR__ . '/../uploads/wr/' . $filename;
+
+if (!file_exists($path)) {
+    http_response_code(404);
+    exit;
+}
+
+$ext  = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+$mime = match($ext) {
+    'png'  => 'image/png',
+    'gif'  => 'image/gif',
+    'webp' => 'image/webp',
+    default => 'image/jpeg',
+};
 
 header('Content-Type: ' . $mime);
-header('Content-Length: ' . strlen($data));
+header('Content-Length: ' . filesize($path));
 header('Cache-Control: private, max-age=86400');
-echo $data;
+readfile($path);

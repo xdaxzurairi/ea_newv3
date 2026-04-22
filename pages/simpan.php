@@ -138,29 +138,20 @@ if ($requestor == '1') {
     $type_req = '3';
 }
 
-// ---- Parse koordinat ----
-$latitude  = '';
-$longitude = '';
-if ($koordinat_lokasi && strpos($koordinat_lokasi, ',') !== false) {
-    [$latitude, $longitude] = explode(',', $koordinat_lokasi, 2);
-    $latitude  = trim($latitude);
-    $longitude = trim($longitude);
-}
-
-// ---- Helper: simpan foto ke DB ----
+// ---- Helper: simpan foto ke kolum wr (foto1/foto2/foto3) ----
 function simpanFotoDB(PDO $pdo, int $wr_id): void
 {
-    // Auto-create jadual wr_photos jika belum wujud
-    $pdo->exec("IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='wr_photos' AND xtype='U')
-        CREATE TABLE wr_photos (
-            photo_id  INT IDENTITY(1,1) PRIMARY KEY,
-            wr_id     INT          NOT NULL,
-            foto_index TINYINT     NOT NULL,
-            mime_type VARCHAR(20)  NOT NULL DEFAULT 'image/jpeg',
-            foto_data VARBINARY(MAX) NOT NULL,
-            file_size INT          NOT NULL DEFAULT 0,
-            uploaded_at DATETIME   NOT NULL DEFAULT GETDATE()
-        )");
+    // Tambah kolum jika belum wujud
+    foreach (['foto1', 'foto2', 'foto3'] as $col) {
+        try {
+            $pdo->exec("IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id=OBJECT_ID('wr') AND name='{$col}')
+                ALTER TABLE wr ADD {$col} VARCHAR(500) NULL");
+        } catch (Exception $e) { /* abaikan jika dah wujud */ }
+    }
+
+    $uploadDir = __DIR__ . '/../uploads/wr/';
+    $updates   = [];
+    $params    = [];
 
     for ($fi = 0; $fi < 3; $fi++) {
         $fn = post('foto_' . $fi, '');
@@ -168,25 +159,30 @@ function simpanFotoDB(PDO $pdo, int $wr_id): void
         $src = __DIR__ . '/../uploads/temp/' . $fn;
         if (!file_exists($src)) continue;
 
-        $data     = file_get_contents($src);
-        $fileSize = strlen($data);
+        $ext  = pathinfo($fn, PATHINFO_EXTENSION);
+        $dest = 'wr_' . $wr_id . '_' . ($fi + 1) . '.' . $ext;
 
-        // Skip jika entah macam mana masih > 1MB
-        if ($fileSize > 1048576) continue;
-
-        $stmt = $pdo->prepare(
-            "INSERT INTO wr_photos (wr_id, foto_index, mime_type, foto_data, file_size)
-             VALUES (?, ?, 'image/jpeg', ?, ?)"
-        );
-        $stmt->bindValue(1, $wr_id, PDO::PARAM_INT);
-        $stmt->bindValue(2, $fi + 1, PDO::PARAM_INT);
-        $stmt->bindParam(3, $data, PDO::PARAM_LOB);
-        $stmt->bindValue(4, $fileSize, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Padam fail temp selepas berjaya simpan ke DB
-        @unlink($src);
+        if (rename($src, $uploadDir . $dest)) {
+            $col       = 'foto' . ($fi + 1);
+            $updates[] = "{$col} = ?";
+            $params[]  = $dest;
+        }
     }
+
+    if (!empty($updates)) {
+        $params[] = $wr_id;
+        $pdo->prepare("UPDATE wr SET " . implode(', ', $updates) . " WHERE wr_id = ?")
+            ->execute($params);
+    }
+}
+
+// ---- Parse koordinat ----
+$latitude  = '';
+$longitude = '';
+if ($koordinat_lokasi && strpos($koordinat_lokasi, ',') !== false) {
+    [$latitude, $longitude] = explode(',', $koordinat_lokasi, 2);
+    $latitude  = trim($latitude);
+    $longitude = trim($longitude);
 }
 
 // ---- INSERT ----
@@ -264,20 +260,43 @@ try {
     }
 
     if ($success) {
-        $wr_row = dbFetchOne("SELECT CAST(SCOPE_IDENTITY() AS INT) AS wr_id");
-        $wr_id  = $wr_row ? (int) $wr_row['wr_id'] : null;
+        // Dapatkan wr_id yang betul: query lepas INSERT, filter by requestor + masa
+        // (@@IDENTITY/lastInsertId tidak boleh pakai sebab ada trigger pada wr)
+        if ($requestor == '1' && $em_number) {
+            $r = dbFetchOne(
+                "SELECT TOP 1 wr_id FROM wr WHERE em_number = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
+                [$em_number]
+            );
+        } elseif ($requestor == '2' && $stu_id_val) {
+            $r = dbFetchOne(
+                "SELECT TOP 1 wr_id FROM wr WHERE stu_id = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
+                [$stu_id_val]
+            );
+        } elseif ($requestor == '3' && $ic_no_val) {
+            $r = dbFetchOne(
+                "SELECT TOP 1 wr_id FROM wr WHERE ic_no = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
+                [$ic_no_val]
+            );
+        }
+        $wr_id = $r ? (int)$r['wr_id'] : null;
 
         if ($wr_id) {
             require_once __DIR__ . '/../lib/email_embom.php';
             email_embom($wr_id, $pdo);
-
-            // Simpan gambar ke DB (wr_photos)
-            simpanFotoDB($pdo, (int)$wr_id);
         }
     }
 } catch (Exception $ex) {
     $success = false;
     $errorMsg = $ex->getMessage();
+}
+
+// Simpan gambar selepas aduan berjaya (kegagalan gambar tidak affect status aduan)
+if ($success && $wr_id) {
+    try {
+        simpanFotoDB($pdo, (int)$wr_id);
+    } catch (Exception $ex) {
+        error_log('simpanFotoDB gagal wr_id=' . $wr_id . ': ' . $ex->getMessage());
+    }
 }
 
 $pageTitle = 'Simpan Aduan';

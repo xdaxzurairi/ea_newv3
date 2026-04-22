@@ -34,9 +34,13 @@ if ($file['size'] > 10 * 1024 * 1024) {
 // Validate MIME type
 $finfo   = new finfo(FILEINFO_MIME_TYPE);
 $mime    = $finfo->file($file['tmp_name']);
+if ($mime === 'application/pdf') {
+    echo json_encode(['success' => false, 'error' => 'Fail PDF tidak dibenarkan. Sila muat naik gambar (JPG/PNG) sahaja.']);
+    exit;
+}
 $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 if (!in_array($mime, $allowed, true)) {
-    echo json_encode(['success' => false, 'error' => 'Jenis fail tidak dibenarkan. Sila muat naik gambar sahaja.']);
+    echo json_encode(['success' => false, 'error' => 'Jenis fail tidak dibenarkan. Sila muat naik gambar sahaja (JPG, PNG, GIF, WEBP).']);
     exit;
 }
 
