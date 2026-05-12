@@ -87,6 +87,7 @@ if ($requestor == '1') {
             'Kampus'       => $site ? trim($site['name']) : '',
             'E-mail'       => trim($row['email']),
         ];
+        
     }
 } elseif ($requestor == '3') {
     $row = dbFetchOne("SELECT email, tel_no, name_user, ic_no FROM afm_user_osd WHERE ic_no = ?", [$no_kp]);
