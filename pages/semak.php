@@ -147,30 +147,49 @@ require_once __DIR__ . '/../includes/header.php';
                     if ($pt) $jenis = descSlashToDash($pt['description']);
                 ?>
                 <tr>
-                    <td class="col-bil"><span class="ea-card-lbl d-md-none">Bil: </span><?php echo $bil; ?></td>
-                    <td><span class="ea-card-lbl d-md-none">No Aduan: </span>
-                        <a href="<?php echo baseUrl(); ?>/pages/detail.php?wrequested=<?php echo e((string)$row['wr_id']); ?>" class="fw-bold" style="color:var(--uitm-purple);">
-                            <?php echo e((string)$row['wr_id']); ?>
-                        </a>
+                    <td class="col-bil">
+                        <span class="ea-card-lbl d-md-none">Bil</span>
+                        <span class="ea-card-val"><?php echo $bil; ?></span>
                     </td>
-                    <td><span class="ea-card-lbl d-md-none">Tarikh: </span><?php echo e($row['date_requested'] ?? '-'); ?></td>
-                    <td><span class="ea-card-lbl d-md-none">Masa: </span><?php echo e($row['time_requested'] ?? '-'); ?></td>
-                    <td><span class="ea-card-lbl d-md-none">Lokasi: </span><?php echo e($lokasi); ?></td>
-                    <td><span class="ea-card-lbl d-md-none">Perkara Aduan: </span><?php echo e($jenis); ?></td>
-                    <td><span class="ea-card-lbl d-md-none">Medium: </span><?php echo e($mediumLabels[$row['type_wr'] ?? ''] ?? $row['type_wr'] ?? '-'); ?></td>
-                    <td class="col-status"><span class="ea-card-lbl d-md-none">Status: </span><span class="badge <?php echo $info['badge']; ?>"><?php echo e($info['label']); ?></span></td>
-                    <td class="col-maklumbalas"><span class="ea-card-lbl d-md-none">Maklumbalas: </span>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">No Aduan</span>
+                        <span class="ea-card-val"><a href="<?php echo baseUrl(); ?>/pages/detail.php?wrequested=<?php echo e((string)$row['wr_id']); ?>" class="fw-bold" style="color:var(--uitm-purple);"><?php echo e((string)$row['wr_id']); ?></a></span>
+                    </td>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">Tarikh</span>
+                        <span class="ea-card-val"><?php echo e($row['date_requested'] ?? '-'); ?></span>
+                    </td>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">Masa</span>
+                        <span class="ea-card-val"><?php echo e($row['time_requested'] ?? '-'); ?></span>
+                    </td>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">Lokasi</span>
+                        <span class="ea-card-val"><?php echo e($lokasi); ?></span>
+                    </td>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">Perkara</span>
+                        <span class="ea-card-val"><?php echo e($jenis); ?></span>
+                    </td>
+                    <td>
+                        <span class="ea-card-lbl d-md-none">Medium</span>
+                        <span class="ea-card-val"><?php echo e($mediumLabels[$row['type_wr'] ?? ''] ?? $row['type_wr'] ?? '-'); ?></span>
+                    </td>
+                    <td class="col-status">
+                        <span class="ea-card-lbl d-md-none">Status</span>
+                        <span class="ea-card-val"><span class="badge <?php echo $info['badge']; ?>"><?php echo e($info['label']); ?></span></span>
+                    </td>
+                    <td class="col-maklumbalas">
+                        <span class="ea-card-lbl d-md-none">Maklumbalas</span>
+                        <span class="ea-card-val">
                         <?php if ($st === 'COM' && empty($row['work_performance'])): ?>
-                        <a href="javascript:void(0);" onclick="window.open('<?php echo baseUrl(); ?>/pages/maklumbalas.php?id=<?php echo e((string)$row['wr_id']); ?>','maklumbalas','width=600,height=500,scrollbars=yes');" class="btn btn-sm btn-uitm-gold">
-                            <i class="bi bi-chat-dots"></i> Maklumbalas
-                        </a>
+                            <a href="javascript:void(0);" onclick="window.open('<?php echo baseUrl(); ?>/pages/maklumbalas.php?id=<?php echo e((string)$row['wr_id']); ?>','maklumbalas','width=600,height=500,scrollbars=yes');" class="btn btn-sm btn-uitm-gold"><i class="bi bi-chat-dots"></i> Maklumbalas</a>
                         <?php elseif (!empty($row['work_performance'])): ?>
-                        <span class="text-muted" style="font-size:0.82rem;">
-                            <?php echo $row['work_performance'] == '1' ? '<i class="bi bi-hand-thumbs-up text-success"></i> Memuaskan' : '<i class="bi bi-hand-thumbs-down text-danger"></i> Tidak Memuaskan'; ?>
-                        </span>
+                            <span class="text-muted" style="font-size:0.82rem;"><?php echo $row['work_performance'] == '1' ? '<i class="bi bi-hand-thumbs-up text-success"></i> Memuaskan' : '<i class="bi bi-hand-thumbs-down text-danger"></i> Tidak Memuaskan'; ?></span>
                         <?php else: ?>
-                        <span class="text-muted">-</span>
+                            <span class="text-muted">&#8212;</span>
                         <?php endif; ?>
+                        </span>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -203,3 +222,4 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+
