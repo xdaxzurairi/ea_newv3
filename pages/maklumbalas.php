@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && post('hantar') === '1') {
             $saved = true;
 
             if ($work_performance === '2') {
-                require_once __DIR__ . '/../lib/email_embom.php';
-                email_embom($wr_id, $pdo);
+                require_once __DIR__ . '/../lib/email_pengarah.php';
+                email_pengarah($wr_id, $pdo);
             }
         } catch (Exception $ex) {
             $error = 'Ralat menyimpan maklumbalas: ' . $ex->getMessage();

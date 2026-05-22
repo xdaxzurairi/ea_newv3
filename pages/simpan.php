@@ -108,13 +108,20 @@ if ($requestor == '1') {
         $requestor_name = trim($em_row['em_id']); // nama staf
     }
     // Jika dp_id staf adalah PPF (A0140 atau N00020), treat sebagai inisiatif (5)
-    // selain itu, staf biasa (1)
-    $dp_id = $em_row ? trim($em_row['dp_id'] ?? '') : '';
-    if ($dp_id === 'A0140' || $dp_id === 'N00020') {
-        $type_req = '5';
-    } else {
-        $type_req = '1';
-    }
+       // Jika staf dalam cf table (in_house=1/2), juga treat sebagai inisiatif (5) — sama seperti pwa_eworks
+       $dp_id = $em_row ? trim($em_row['dp_id'] ?? '') : '';
+       if ($dp_id === 'A0140' || $dp_id === 'N00020') {
+           $type_req = '5'; // Staf PPF
+       } else {
+           // Semak CF table — staf penyelia dalam cf juga dianggap inisiatif
+           $cfRow = dbFetchOne(
+               "SELECT c.cf_id FROM cf c
+                INNER JOIN em e ON e.em_number = c.cf_id
+                WHERE e.em_number = ? AND c.in_house = '1'",
+               [$em_number]
+           );
+           $type_req = $cfRow ? '5' : '1';
+       }
 
 } elseif ($requestor == '2') {
     // Pelajar – kekalkan seperti eAduan v3 (type_req = 2)

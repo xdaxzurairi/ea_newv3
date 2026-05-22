@@ -113,7 +113,7 @@ function email_embom($noaduan, $pdo)
         $body .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Keterangan</td><td style='padding:6px 12px;'>" . nl2br(htmlspecialchars($wr_desc)) . "</td></tr>";
     }
     $body .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Jenis Permintaan</td><td style='padding:6px 12px;'>{$type_req_label}</td></tr>";
-    $body .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Tindakan</td><td style='padding:6px 12px;'>Sila log masuk ke <a href='https://eaduan.uitm.edu.my'>Sistem e-Aduan</a> untuk tindakan selanjutnya.</td></tr>";
+    $body .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Tindakan</td><td style='padding:6px 12px;'>Sila log masuk ke <a href='https://fmsdev.uitm.edu.my'>Sistem e-Aduan</a> untuk tindakan selanjutnya.</td></tr>";
     $body .= "</table>";
     $body .= "<hr style='border:none;border-top:2px solid #D4A843;'>";
     $body .= "<p style='font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan, UiTM.</p>";
@@ -121,7 +121,7 @@ function email_embom($noaduan, $pdo)
 
     $headers  = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: eAduan <eaduan@uitm.edu.my>\r\n";
+    $headers .= "From: eAduan <jpem@uitm.edu.my>\r\n";
 
     foreach ($to_emails as $to) {
         @mail($to, $subject, $body, $headers);
@@ -139,7 +139,7 @@ function email_embom($noaduan, $pdo)
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Jenis Kerosakan</td><td style='padding:6px 12px;'>" . htmlspecialchars($prob_desc, ENT_QUOTES, 'UTF-8') . "</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Medium</td><td style='padding:6px 12px;'>" . htmlspecialchars($medium_text, ENT_QUOTES, 'UTF-8') . "</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Dimajukan kepada (nama – no. tel)</td><td style='padding:6px 12px;'>{$bom_dimajukan_esc}</td></tr>";
-        $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Semak status aduan</td><td style='padding:6px 12px;'><a href='https://eaduan.uitm.edu.my'>Sistem e-Aduan</a></td></tr>";
+        $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Semak status aduan</td><td style='padding:6px 12px;'><a href='https://fmsdev.uitm.edu.my'>Sistem e-Aduan</a></td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Maklumbalas pelanggan</td><td style='padding:6px 12px;'>Boleh diisi di laman web tersebut apabila kerja-kerja pembaikan telah disiapkan.</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Nota penilaian</td><td style='padding:6px 12px;'>Pengguna dianggap berpuas hati sekiranya tidak membuat penilaian dalam tempoh tiga (3) hari setelah kerja siap.</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Catatan</td><td style='padding:6px 12px;'>Sekian dan terima kasih di atas aduan anda.</td></tr>";

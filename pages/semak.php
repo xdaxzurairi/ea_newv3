@@ -61,28 +61,7 @@ try {
     $totalPages = 1;
 }
 
-$statusMap = [
-    'R'   => ['label' => 'PERMOHONAN',                                           'badge' => 'badge-status-r'],
-    'I'   => ['label' => 'ARAHAN KERJA DIKELUARKAN',                             'badge' => 'badge-status-w'],
-    'APP' => ['label' => 'DILULUSKAN',                                           'badge' => 'badge-status-w'],
-    'W'   => ['label' => 'DALAM TINDAKAN',                                       'badge' => 'badge-status-w'],
-    'COM' => ['label' => 'SIAP',                                                 'badge' => 'badge-status-com'],
-    'S'   => ['label' => 'SIAP',                                                 'badge' => 'badge-status-com'],
-    'CAN' => ['label' => 'DIBATALKAN',                                            'badge' => 'badge-status-can'],
-    'REJ' => ['label' => 'DITOLAK',                                               'badge' => 'badge-status-can'],
-    'A'   => ['label' => 'DITOLAK',                                               'badge' => 'badge-status-can'],
-    'CLS' => ['label' => 'DITUTUP',                                               'badge' => 'badge-status-com'],
-    'CLO' => ['label' => 'DITUTUP',                                               'badge' => 'badge-status-com'],
-    'PEN' => ['label' => 'PENDING',                                               'badge' => 'badge-status-r'],
-    'HLD' => ['label' => 'DITANGGUH',                                             'badge' => 'badge-status-r'],
-    'REV' => ['label' => 'DISEMAK SEMULA DAN OPERASI DIHENTIKAN SEMENTARA',        'badge' => 'badge-status-r'],
-    'AA'  => ['label' => 'WORK ORDER DIKELUARKAN',                                'badge' => 'badge-status-w'],
-    'HP'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU PERALATAN',        'badge' => 'badge-status-r'],
-    'HA'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU KEBENARAN MASUK', 'badge' => 'badge-status-r'],
-    'HL'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU PEKERJA',         'badge' => 'badge-status-r'],
-    'WC'  => ['label' => 'SALAH SALURAN',                                         'badge' => 'badge-status-can'],
-    'DEF' => ['label' => 'KECACATAN DALAM TEMPOH TANGGUNGAN',                     'badge' => 'badge-status-r'],
-];
+$statusMap = getWrStatusMap();
 
 // Medium = kolum type_wr dalam wr; satu sumber label dengan DB
 $mediumLabels = getMediumLabels();
