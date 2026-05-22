@@ -188,3 +188,55 @@ function descSlashToDash(?string $s): string
 {
     return str_replace('/', ' - ', trim($s ?? ''));
 }
+
+/** Papar kod dan deskripsi: "KOD - Deskripsi" */
+function formatCodeDesc(?string $code, ?string $desc): string
+{
+    $code = trim($code ?? '');
+    $desc = trim($desc ?? '');
+    if ($code !== '' && $desc !== '') {
+        if (strcasecmp($code, $desc) === 0) {
+            return $desc;
+        }
+        return $code . ' - ' . $desc;
+    }
+    return $desc !== '' ? $desc : $code;
+}
+
+/** Label status aduan (kod → deskripsi penuh) */
+function getWrStatusMap(): array
+{
+    return [
+        'R'   => ['label' => 'PERMOHONAN',                                           'badge' => 'badge-status-r'],
+        'I'   => ['label' => 'ARAHAN KERJA DIKELUARKAN',                             'badge' => 'badge-status-w'],
+        'APP' => ['label' => 'DILULUSKAN',                                           'badge' => 'badge-status-w'],
+        'W'   => ['label' => 'DALAM TINDAKAN',                                       'badge' => 'badge-status-w'],
+        'COM' => ['label' => 'SIAP',                                                 'badge' => 'badge-status-com'],
+        'S'   => ['label' => 'SIAP',                                                 'badge' => 'badge-status-com'],
+        'CAN' => ['label' => 'DIBATALKAN',                                            'badge' => 'badge-status-can'],
+        'REJ' => ['label' => 'DITOLAK',                                               'badge' => 'badge-status-can'],
+        'A'   => ['label' => 'DITOLAK',                                               'badge' => 'badge-status-can'],
+        'CLS' => ['label' => 'DITUTUP',                                               'badge' => 'badge-status-com'],
+        'CLO' => ['label' => 'DITUTUP',                                               'badge' => 'badge-status-com'],
+        'PEN' => ['label' => 'PENDING',                                               'badge' => 'badge-status-r'],
+        'HLD' => ['label' => 'DITANGGUH',                                             'badge' => 'badge-status-r'],
+        'REV' => ['label' => 'DISEMAK SEMULA DAN OPERASI DIHENTIKAN SEMENTARA',        'badge' => 'badge-status-r'],
+        'AA'  => ['label' => 'WORK ORDER DIKELUARKAN',                                'badge' => 'badge-status-w'],
+        'HP'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU PERALATAN',        'badge' => 'badge-status-r'],
+        'HA'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU KEBENARAN MASUK', 'badge' => 'badge-status-r'],
+        'HL'  => ['label' => 'OPERASI DIHENTIKAN SEMENTARA MENUNGGU PEKERJA',         'badge' => 'badge-status-r'],
+        'WC'  => ['label' => 'SALAH SALURAN',                                         'badge' => 'badge-status-can'],
+        'DEF' => ['label' => 'KECACATAN DALAM TEMPOH TANGGUNGAN',                     'badge' => 'badge-status-r'],
+    ];
+}
+
+/** Dapatkan label & badge status daripada kod */
+function getWrStatusInfo(string $statusCode): array
+{
+    $st = strtoupper(trim($statusCode));
+    if ($st === '') {
+        $st = 'COM';
+    }
+    $map = getWrStatusMap();
+    return $map[$st] ?? ['label' => $st, 'badge' => 'bg-secondary'];
+}

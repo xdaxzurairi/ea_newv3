@@ -39,6 +39,12 @@ $loc_desc   = req('loc_desc', '');
 $prob_description = req('prob_description', '');
 $koordinat_lokasi = req('koordinat_lokasi', '');
 
+$foto_saved = [
+    req('foto_0', ''),
+    req('foto_1', ''),
+    req('foto_2', ''),
+];
+
 // Bilik sendiri vars (readonly, daripada popup atau auto-isi)
 $idneg   = req('idneg', '');
 $idkamp  = req('idkamp', '');
@@ -297,12 +303,12 @@ require_once __DIR__ . '/../includes/header.php';
                     <div class="ea-sec-hdr-gold mb-2"><i class="bi bi-house-door"></i> Bilik Sendiri</div>
                     <?php if ($has_room): ?>
                     <div class="row g-2">
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Negeri</span><span class="ea-field-value"><?php echo e($idneg); ?></span></div></div>
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Kampus</span><span class="ea-field-value"><?php echo e($idkamp); ?></span></div></div>
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Bangunan</span><span class="ea-field-value"><?php echo e($idbang); ?></span></div></div>
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Blok</span><span class="ea-field-value"><?php echo e($idblk); ?></span></div></div>
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Aras</span><span class="ea-field-value"><?php echo e($fl . ' - ' . $idfl); ?></span></div></div>
-                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Ruang</span><span class="ea-field-value"><?php echo e($ruang . ' - ' . $idruang); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Negeri</span><span class="ea-field-value"><?php echo e(formatCodeDesc($neg, $idneg)); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Kampus</span><span class="ea-field-value"><?php echo e(formatCodeDesc($kamp, $idkamp)); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Bangunan</span><span class="ea-field-value"><?php echo e(formatCodeDesc($bang, $idbang)); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Blok</span><span class="ea-field-value"><?php echo e(formatCodeDesc($blk, $idblk)); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Aras</span><span class="ea-field-value"><?php echo e(formatCodeDesc($fl, $idfl)); ?></span></div></div>
+                        <div class="col-6"><div class="ea-field"><span class="ea-field-label">Ruang</span><span class="ea-field-value"><?php echo e(formatCodeDesc($ruang, $idruang)); ?></span></div></div>
                     </div>
                     <?php else: ?>
                     <p class="text-muted" style="font-size:0.85rem;">Sila pilih bilik dari senarai di atas.</p>
@@ -471,6 +477,11 @@ require_once __DIR__ . '/../includes/header.php';
 
             <?php endif; // infra check ?>
             <?php endif; // location check ?>
+
+            <?php
+            $foto_section_title = '3.0 Gambar Kerosakan';
+            require __DIR__ . '/../includes/foto_upload_ui.php';
+            ?>
 
             <div id="validation-alert-wrap"></div>
             <div class="text-center mt-3 pt-3 border-top">
@@ -646,6 +657,15 @@ require_once __DIR__ . '/../includes/header.php';
         }
     }
 
+    function optionLabel(item) {
+        var id = (item.id || '').trim();
+        var name = (item.name || '').trim();
+        if (id && name && id.toUpperCase() !== name.toUpperCase()) {
+            return id + ' - ' + name;
+        }
+        return name || id;
+    }
+
     function loadOptions(url, selectId, savedVal, callback) {
         var sel = document.getElementById(selectId);
         if (!sel) return;
@@ -656,7 +676,7 @@ require_once __DIR__ . '/../includes/header.php';
             var html = '<option value="">-- Sila Pilih --</option>';
             data.forEach(function(item){
                 var selected = (item.id == savedVal) ? ' selected' : '';
-                html += '<option value="'+esc(item.id)+'"'+selected+'>'+esc(item.id+' - '+item.name)+'</option>';
+                html += '<option value="'+esc(item.id)+'"'+selected+'>'+esc(optionLabel(item))+'</option>';
             });
             sel.innerHTML = html;
             _pendingLoads--;
@@ -785,6 +805,15 @@ function popUpbilik(){
 }
 
 function validateAndSubmit() {
+    if (typeof eaIsFotoUploading === 'function' && eaIsFotoUploading()) {
+        var fs = document.getElementById('foto-status');
+        if (fs) {
+            fs.innerHTML = '<span class="text-warning"><i class="bi bi-hourglass-split"></i> Sila tunggu gambar selesai dimuat naik.</span>';
+            fs.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+
     document.querySelectorAll('.is-invalid').forEach(function(el) {
         el.classList.remove('is-invalid');
     });
@@ -886,3 +915,5 @@ function reqText(name, label, errors) {
 }
 
 </script>
+<script>window.EA_BASE = '<?php echo baseUrl(); ?>';</script>
+<script src="<?php echo baseUrl(); ?>/assets/js/foto-upload.js"></script>

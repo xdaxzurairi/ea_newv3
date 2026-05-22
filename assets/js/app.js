@@ -32,7 +32,7 @@
                     let html = '<option value="">-- Sila Pilih --</option>';
                     data.forEach(item => {
                         html += '<option value="' + escHtml(item.id) + '">'
-                              + escHtml(item.id + ' - ' + item.name) + '</option>';
+                              + escHtml(optionLabel(item)) + '</option>';
                     });
                     child.innerHTML = html;
                     child.dispatchEvent(new Event('change'));
@@ -47,6 +47,15 @@
         const d = document.createElement('div');
         d.textContent = str;
         return d.innerHTML;
+    }
+
+    function optionLabel(item) {
+        const id = (item.id || '').trim();
+        const name = (item.name || '').trim();
+        if (id && name && id.toUpperCase() !== name.toUpperCase()) {
+            return id + ' - ' + name;
+        }
+        return name || id;
     }
 
     /**

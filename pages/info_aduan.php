@@ -48,6 +48,12 @@ $blk     = post('blk', '');
 $fl      = post('fl', '');
 $ruang   = post('ruang', '');
 
+$foto_saved = [
+    post('foto_0', ''),
+    post('foto_1', ''),
+    post('foto_2', ''),
+];
+
 // ---- Maklumat Pelapor ----
 $pelapor = [];
 
@@ -132,47 +138,47 @@ if ($location == '8') {
 
 if ($neg_for_lookup) {
     $r = dbFetchOne("SELECT name, state_id FROM state WHERE state_id = ?", [$neg_for_lookup]);
-    if ($r) $nama_negeri = trim($r['name']);
+    $nama_negeri = formatCodeDesc($neg_for_lookup, $r ? trim($r['name']) : ($location == '8' ? $idneg : ''));
 }
 if ($neg_for_lookup && $kmp_for_lookup) {
     $r = dbFetchOne("SELECT state_id, site_id, name FROM site WHERE state_id = ? AND site_id = ?", [$neg_for_lookup, $kmp_for_lookup]);
-    if ($r) $nama_kampus = trim($r['name']);
+    $nama_kampus = formatCodeDesc($kmp_for_lookup, $r ? trim($r['name']) : ($location == '8' ? $idkamp : ''));
 }
 if ($neg_for_lookup && $kmp_for_lookup && $bng_for_lookup) {
     $r = dbFetchOne("SELECT bl_name, state_id, site_id, bldg_id FROM bldg WHERE state_id = ? AND site_id = ? AND bldg_id = ?", [$neg_for_lookup, $kmp_for_lookup, $bng_for_lookup]);
-    if ($r) $nama_bangunan = trim($r['bl_name']);
+    $nama_bangunan = formatCodeDesc($bng_for_lookup, $r ? trim($r['bl_name']) : ($location == '8' ? $idbang : ''));
 }
 if ($neg_for_lookup && $kmp_for_lookup && $bng_for_lookup && $bl_for_lookup) {
     $r = dbFetchOne("SELECT site_id, state_id, bl_id, bldg_id, name, block_num FROM bl WHERE state_id = ? AND site_id = ? AND bldg_id = ? AND bl_id = ?", [$neg_for_lookup, $kmp_for_lookup, $bng_for_lookup, $bl_for_lookup]);
-    if ($r) $nama_blok = trim($r['name']);
+    $nama_blok = formatCodeDesc($bl_for_lookup, $r ? trim($r['name']) : ($location == '8' ? $idblk : ''));
 }
 if ($bl_for_lookup && $fl_for_lookup) {
     $r = dbFetchOne("SELECT fl_id, name FROM fl WHERE bl_id = ? AND fl_id = ?", [$bl_for_lookup, $fl_for_lookup]);
-    if ($r) $nama_aras = trim($r['name']);
+    $nama_aras = formatCodeDesc($fl_for_lookup, $r ? trim($r['name']) : ($location == '8' ? $idfl : ''));
 }
 if ($rm_for_lookup && $bl_for_lookup && $fl_for_lookup) {
     $r = dbFetchOne("SELECT rm_id, bl_id, fl_id, name FROM rm WHERE rm_id = ? AND bl_id = ? AND fl_id = ?", [$rm_for_lookup, $bl_for_lookup, $fl_for_lookup]);
-    if ($r) $nama_ruang = trim($r['name']);
+    $nama_ruang = formatCodeDesc($rm_for_lookup, $r ? trim($r['name']) : ($location == '8' ? $idruang : ''));
 }
 if ($section) {
     $r = dbFetchOne("SELECT section, description FROM section WHERE section = ?", [$section]);
-    if ($r) $nama_section = descSlashToDash($r['description']);
+    $nama_section = formatCodeDesc($section, $r ? descSlashToDash($r['description']) : '');
 }
 if ($section && $prob_group) {
     $r = dbFetchOne("SELECT section, prob_group, description FROM prob_group WHERE section = ? AND prob_group = ?", [$section, $prob_group]);
-    if ($r) $nama_prob_group = descSlashToDash($r['description']);
+    $nama_prob_group = formatCodeDesc($prob_group, $r ? descSlashToDash($r['description']) : '');
 }
 if ($section && $prob_group && $prob_type) {
     $r = dbFetchOne("SELECT section, prob_group, prob_type, description FROM probtype WHERE section = ? AND prob_group = ? AND prob_type = ?", [$section, $prob_group, $prob_type]);
-    if ($r) $nama_prob_type = descSlashToDash($r['description']);
+    $nama_prob_type = formatCodeDesc($prob_type, $r ? descSlashToDash($r['description']) : '');
 }
 if ($idkat_infra) {
     $r = dbFetchOne("SELECT infra_id, infra_name FROM wr_kat_infra WHERE infra_id = ?", [$idkat_infra]);
-    if ($r) $nama_infra = trim($r['infra_name']);
+    $nama_infra = formatCodeDesc($idkat_infra, $r ? trim($r['infra_name']) : '');
 }
 if ($id_subinfra) {
     $r = dbFetchOne("SELECT SUBINFRA_ID, SUBINFRA_NAME FROM WR_SUB_INFRA WHERE subinfra_id = ?", [$id_subinfra]);
-    if ($r) $nama_subinfra = trim($r['SUBINFRA_NAME']);
+    $nama_subinfra = formatCodeDesc($id_subinfra, $r ? trim($r['SUBINFRA_NAME']) : '');
 }
 
 $mediumLabels = getMediumLabels();
@@ -244,6 +250,31 @@ require_once __DIR__ . '/../includes/header.php';
             <tr><td class="lbl">Keterangan</td><td><?php echo e($prob_description); ?></td></tr>
             <tr><td class="lbl">Medium</td><td><?php echo e($mediumLabels[$medium] ?? $medium); ?></td></tr>
         </table>
+
+        <?php
+        $has_foto_confirm = false;
+        for ($fx = 0; $fx < 3; $fx++) {
+            if (!empty($foto_saved[$fx])) {
+                $has_foto_confirm = true;
+                break;
+            }
+        }
+        if ($has_foto_confirm): ?>
+        <div class="ea-sec-hdr mb-2"><i class="bi bi-camera"></i> 4.0 Gambar Kerosakan</div>
+        <div class="row g-2 mb-0">
+            <?php for ($fx = 0; $fx < 3; $fx++):
+                if (empty($foto_saved[$fx])) continue; ?>
+            <div class="col-4">
+                <?php $foto_url = baseUrl() . '/ajax/foto_temp.php?f=' . urlencode($foto_saved[$fx]); ?>
+                <img src="<?php echo e($foto_url); ?>"
+                     class="img-fluid rounded border"
+                     style="height:120px;width:100%;object-fit:cover;"
+                     alt="Gambar <?php echo $fx + 1; ?>">
+                <div class="text-center mt-1" style="font-size:0.78rem;color:#666;">Gambar <?php echo $fx + 1; ?></div>
+            </div>
+            <?php endfor; ?>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -261,44 +292,11 @@ require_once __DIR__ . '/../includes/header.php';
     foreach ($fields as $f) {
         echo '<input type="hidden" name="' . e($f) . '" value="' . e($$f) . '">' . "\n";
     }
-    // foto filenames diisi oleh JS sebelum submit
     for ($fi = 0; $fi < 3; $fi++) {
-        echo '<input type="hidden" name="foto_' . $fi . '" id="hfoto_' . $fi . '" value="">' . "\n";
+        echo '<input type="hidden" name="foto_' . $fi . '" value="' . e($foto_saved[$fi] ?? '') . '">' . "\n";
     }
     echo '<input type="hidden" name="csrf_token" value="' . e(csrfToken()) . '">' . "\n";
     ?>
-    <!-- ===== GAMBAR KEROSAKAN ===== -->
-    <div class="ea-card mb-3">
-        <div class="ea-sec-hdr"><i class="bi bi-camera"></i> 4.0 Gambar Kerosakan <small class="fw-normal text-muted" style="font-size:0.8rem;">(pilihan &bull; maks. 3 gambar &bull; 5MB setiap satu)</small></div>
-        <div class="card-body p-3">
-            <p class="text-muted mb-2" style="font-size:0.85rem;"><i class="bi bi-info-circle"></i> Anda boleh mengambil gambar menggunakan kamera telefon atau memilih dari galeri.</p>
-            <div class="row g-2" id="foto-preview-row">
-                <?php for ($si = 0; $si < 3; $si++): ?>
-                <div class="col-4">
-                    <div class="foto-slot border rounded d-flex flex-column align-items-center justify-content-center bg-light position-relative"
-                         style="height:130px;cursor:pointer;" id="slot-<?php echo $si; ?>" onclick="triggerFoto(<?php echo $si; ?>)">
-                        <i class="bi bi-camera-plus" style="font-size:2.2rem;color:#aaa;" id="icon-<?php echo $si; ?>"></i>
-                        <small class="text-muted mt-1" id="lbl-<?php echo $si; ?>">Gambar <?php echo $si + 1; ?></small>
-                        <img id="preview-<?php echo $si; ?>" src="" alt=""
-                             class="d-none position-absolute top-0 start-0 w-100 h-100"
-                             style="object-fit:cover;border-radius:0.375rem;">
-                        <button type="button"
-                                class="btn btn-sm btn-danger position-absolute top-0 end-0 d-none"
-                                id="remove-<?php echo $si; ?>"
-                                style="padding:1px 6px;font-size:0.7rem;margin:3px;z-index:5;"
-                                onclick="removeFoto(event,<?php echo $si; ?>)">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                    <input type="file" id="file-<?php echo $si; ?>" accept="image/*" capture="environment"
-                           class="d-none" onchange="handleFoto(<?php echo $si; ?>)">
-                </div>
-                <?php endfor; ?>
-            </div>
-            <div id="foto-status" class="mt-2" style="font-size:0.82rem;min-height:1.2em;"></div>
-        </div>
-    </div>
-    <!-- ===== AKHIR GAMBAR ===== -->
 
     <div class="d-flex justify-content-center gap-3 mb-4">
         <button type="button" class="btn btn-uitm-gold px-4" onclick="history.back();">
@@ -310,82 +308,13 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 </form>
 
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+
 <script>
-var BASE = '<?php echo baseUrl(); ?>';
-var fotoUploading = false;
-
-function triggerFoto(index) {
-    if (fotoUploading) return;
-    document.getElementById('file-' + index).click();
-}
-
-function handleFoto(index) {
-    var fileInput = document.getElementById('file-' + index);
-    var file = fileInput.files[0];
-    if (!file) return;
-
-    fotoUploading = true;
-    var statusEl = document.getElementById('foto-status');
-    statusEl.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split"></i> Memuat naik Gambar ' + (index + 1) + '...</span>';
-
-    var formData = new FormData();
-    formData.append('foto', file);
-    formData.append('index', index);
-
-    fetch(BASE + '/ajax/upload_foto.php', { method: 'POST', body: formData })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-        fotoUploading = false;
-        if (data.success) {
-            document.getElementById('hfoto_' + index).value = data.filename;
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = document.getElementById('preview-' + index);
-                img.src = e.target.result;
-                img.classList.remove('d-none');
-                document.getElementById('icon-' + index).classList.add('d-none');
-                document.getElementById('lbl-' + index).classList.add('d-none');
-                document.getElementById('remove-' + index).classList.remove('d-none');
-            };
-            reader.readAsDataURL(file);
-            var kb = data.size_kb ? ' (' + data.size_kb + ' KB)' : '';
-            statusEl.innerHTML = '<span class="text-success"><i class="bi bi-check-circle-fill"></i> Gambar ' + (index + 1) + ' berjaya dimuat naik' + kb + '.</span>';
-        } else {
-            statusEl.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> ' + data.error + '</span>';
-            fileInput.value = '';
-        }
-    })
-    .catch(function() {
-        fotoUploading = false;
-        statusEl.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Ralat sambungan. Sila cuba lagi.</span>';
-        fileInput.value = '';
-    });
-}
-
-function removeFoto(event, index) {
-    event.stopPropagation();
-    document.getElementById('hfoto_' + index).value = '';
-    document.getElementById('file-' + index).value = '';
-    var img = document.getElementById('preview-' + index);
-    img.src = '';
-    img.classList.add('d-none');
-    document.getElementById('icon-' + index).classList.remove('d-none');
-    document.getElementById('lbl-' + index).classList.remove('d-none');
-    document.getElementById('remove-' + index).classList.add('d-none');
-    document.getElementById('foto-status').innerHTML = '';
-}
-
 function hantarAduan() {
-    if (fotoUploading) {
-        document.getElementById('foto-status').innerHTML =
-            '<span class="text-warning"><i class="bi bi-hourglass-split"></i> Sila tunggu gambar selesai dimuat naik.</span>';
-        return;
-    }
     document.getElementById('formSimpan').submit();
 }
 </script>
-
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
 
 <?php if ($koordinat_lokasi): ?>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />

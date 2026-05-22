@@ -17,7 +17,14 @@ if (!$wr_id) {
     exit;
 }
 
-$wr = dbFetchOne("SELECT * FROM wr WHERE wr_id = ?", [$wr_id]);
+$wr = dbFetchOne(
+    "SELECT *,
+            FORMAT(date_requested, 'dd-MM-yyyy') AS date_requested_fmt,
+            FORMAT(time_requested, 'HH:mm:ss') AS time_requested_fmt,
+            FORMAT(date_stat_chg, 'dd-MM-yyyy HH:mm:ss') AS date_stat_chg_fmt
+     FROM wr WHERE wr_id = ?",
+    [$wr_id]
+);
 if (!$wr) {
     $pageTitle = 'Aduan Tidak Dijumpai';
     require_once __DIR__ . '/../includes/header.php';
@@ -48,57 +55,57 @@ $nama_infra = $nama_subinfra = '-';
 
 if ($state_id) {
     $r = dbFetchOne("SELECT name, state_id FROM state WHERE state_id = ?", [$state_id]);
-    if ($r) $nama_negeri = trim($r['name']);
+    $nama_negeri = formatCodeDesc($state_id, $r ? trim($r['name']) : '');
 }
 
 // Resolve bldg_id from bl -> bldg
 $bldg_id = '';
 if ($bl_id) {
-    $bl_r = dbFetchOne("SELECT site_id, state_id, bl_id, bldg_id, name, block_num FROM bl WHERE state_id = ? AND site_id = ? AND bldg_id = ? AND bl_id = ?", [$state_id, $site_id, $bldg_id, $bl_id]);
+    $bl_r = dbFetchOne("SELECT site_id, state_id, bl_id, bldg_id, name, block_num FROM bl WHERE state_id = ? AND site_id = ? AND bl_id = ?", [$state_id, $site_id, $bl_id]);
     if (!$bl_r) {
         $bl_r = dbFetchOne("SELECT bldg_id, name FROM bl WHERE bl_id = ?", [$bl_id]);
     }
     if ($bl_r) {
-        $nama_blok = trim($bl_r['name']);
+        $nama_blok = formatCodeDesc($bl_id, trim($bl_r['name']));
         $bldg_id   = trim($bl_r['bldg_id'] ?? '');
     }
 }
 
 if ($state_id && $site_id) {
     $r = dbFetchOne("SELECT state_id, site_id, name FROM site WHERE state_id = ? AND site_id = ?", [$state_id, $site_id]);
-    if ($r) $nama_kampus = trim($r['name']);
+    $nama_kampus = formatCodeDesc($site_id, $r ? trim($r['name']) : '');
 }
 if ($state_id && $site_id && $bldg_id) {
     $r = dbFetchOne("SELECT bl_name, state_id, site_id, bldg_id FROM bldg WHERE state_id = ? AND site_id = ? AND bldg_id = ?", [$state_id, $site_id, $bldg_id]);
-    if ($r) $nama_bangunan = trim($r['bl_name']);
+    $nama_bangunan = formatCodeDesc($bldg_id, $r ? trim($r['bl_name']) : '');
 }
 if ($bl_id && $fl_id) {
     $r = dbFetchOne("SELECT fl_id, name FROM fl WHERE bl_id = ? AND fl_id = ?", [$bl_id, $fl_id]);
-    if ($r) $nama_aras = trim($r['name']);
+    $nama_aras = formatCodeDesc($fl_id, $r ? trim($r['name']) : '');
 }
 if ($rm_id && $bl_id && $fl_id) {
     $r = dbFetchOne("SELECT rm_id, bl_id, fl_id, name FROM rm WHERE rm_id = ? AND bl_id = ? AND fl_id = ?", [$rm_id, $bl_id, $fl_id]);
-    if ($r) $nama_ruang = trim($r['name']);
+    $nama_ruang = formatCodeDesc($rm_id, $r ? trim($r['name']) : '');
 }
 if ($section) {
     $r = dbFetchOne("SELECT section, description FROM section WHERE section = ?", [$section]);
-    if ($r) $nama_section = descSlashToDash($r['description']);
+    $nama_section = formatCodeDesc($section, $r ? descSlashToDash($r['description']) : '');
 }
 if ($section && $prob_group) {
     $r = dbFetchOne("SELECT section, prob_group, description FROM prob_group WHERE section = ? AND prob_group = ?", [$section, $prob_group]);
-    if ($r) $nama_prob_group = descSlashToDash($r['description']);
+    $nama_prob_group = formatCodeDesc($prob_group, $r ? descSlashToDash($r['description']) : '');
 }
 if ($section && $prob_group && $prob_type) {
     $r = dbFetchOne("SELECT section, prob_group, prob_type, description FROM probtype WHERE section = ? AND prob_group = ? AND prob_type = ?", [$section, $prob_group, $prob_type]);
-    if ($r) $nama_prob_type = descSlashToDash($r['description']);
+    $nama_prob_type = formatCodeDesc($prob_type, $r ? descSlashToDash($r['description']) : '');
 }
 if ($infra_id) {
     $r = dbFetchOne("SELECT infra_id, infra_name FROM wr_kat_infra WHERE infra_id = ?", [$infra_id]);
-    if ($r) $nama_infra = trim($r['infra_name']);
+    $nama_infra = formatCodeDesc($infra_id, $r ? trim($r['infra_name']) : '');
 }
 if ($subinfra_id) {
     $r = dbFetchOne("SELECT SUBINFRA_ID, SUBINFRA_NAME FROM WR_SUB_INFRA WHERE subinfra_id = ?", [$subinfra_id]);
-    if ($r) $nama_subinfra = trim($r['SUBINFRA_NAME']);
+    $nama_subinfra = formatCodeDesc($subinfra_id, $r ? trim($r['SUBINFRA_NAME']) : '');
 }
 
 // ---- Pelapor ----
@@ -141,21 +148,21 @@ if ($em_number) {
 }
 
 // ---- Status ----
-$statusMap = [
-    'R'   => 'PERMOHONAN',
-    'APP' => 'DILULUSKAN',
-    'W'   => 'DALAM TINDAKAN',
-    'COM' => 'SIAP',
-    'CAN' => 'DIBATALKAN',
-    'REJ' => 'DITOLAK',
-    'CLS' => 'DITUTUP',
-    'PEN' => 'PENDING',
-    'HLD' => 'DITANGGUH',
-];
 $st = strtoupper(trim($wr['status'] ?? ''));
-$status_label = $statusMap[$st] ?? $st;
+$statusInfo = getWrStatusInfo($st);
+$status_label = $statusInfo['label'];
+$status_badge = $statusInfo['badge'];
 
 $mediumLabels = getMediumLabels();
+
+$type_req_labels = [
+    '1' => 'Staf UiTM',
+    '2' => 'Pelajar',
+    '3' => 'Pengguna Luar',
+    '5' => 'Inisiatif (Penyelia)',
+];
+$type_req_val   = trim($wr['type_req'] ?? '');
+$type_req_label = $type_req_labels[$type_req_val] ?? 'Staf UiTM';
 
 $pageTitle = 'Butiran Aduan #' . $wr_id;
 require_once __DIR__ . '/../includes/header.php';
@@ -170,16 +177,30 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="ea-card">
     <div class="ea-sec-hdr">
         <i class="bi bi-file-earmark-text"></i> Butiran Aduan #<?php echo e((string)$wr_id); ?>
-        <span class="float-end badge <?php
-            echo match($st) {
-                'COM','CLS' => 'badge-status-com',
-                'CAN','REJ' => 'badge-status-can',
-                'W','APP'   => 'badge-status-w',
-                default     => 'badge-status-r',
-            };
-        ?>"><?php echo e($status_label); ?></span>
+        <span class="float-end badge <?php echo e($status_badge); ?>"><?php echo e($status_label); ?></span>
     </div>
     <div class="card-body p-3">
+
+        <?php
+        $foto_indexes = [];
+        for ($fi = 1; $fi <= 3; $fi++) {
+            if (!empty($wr['foto' . $fi])) {
+                $foto_indexes[] = $fi;
+            }
+        }
+        if (!empty($foto_indexes)): ?>
+        <div class="ea-sec-hdr mb-2"><i class="bi bi-camera"></i> Gambar Kerosakan</div>
+        <div class="row g-2 mb-3">
+            <?php foreach ($foto_indexes as $i => $idx): ?>
+            <div class="col-4">
+                <img src="<?php echo baseUrl(); ?>/ajax/foto.php?wr_id=<?php echo e((string)$wr_id); ?>&idx=<?php echo $idx; ?>"
+                     class="img-fluid rounded border" style="height:120px;width:100%;object-fit:cover;"
+                     alt="Gambar <?php echo $i + 1; ?>">
+                <div class="text-center mt-1" style="font-size:0.78rem;color:#666;">Gambar <?php echo $i + 1; ?></div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
 
         <div class="ea-sec-hdr mb-2"><i class="bi bi-person"></i> Maklumat Pelapor</div>
         <table class="table table-borderless ea-table mb-3" style="font-size:0.88rem;">
@@ -198,9 +219,13 @@ require_once __DIR__ . '/../includes/header.php';
             echo '</tr>';
         }
         ?>
+        <tr>
+            <td class="lbl">Kategori Pengadu</td>
+            <td colspan="3"><?php echo e($type_req_label); ?></td>
+        </tr>
         </table>
 
-        <div class="ea-sec-hdr mb-2"><i class="bi bi-geo-alt"></i> Lokasi</div>
+        <div class="ea-sec-hdr mb-2"><i class="bi bi-geo-alt"></i> Lokasi</div>        
         <table class="table table-borderless ea-table mb-3" style="font-size:0.88rem;">
             <tr><td class="lbl">Negeri</td><td><?php echo e($nama_negeri); ?></td></tr>
             <tr><td class="lbl">Kampus</td><td><?php echo e($nama_kampus); ?></td></tr>
@@ -227,45 +252,16 @@ require_once __DIR__ . '/../includes/header.php';
             <tr><td class="lbl">Medium</td><td><?php echo e($mediumLabels[trim($wr['type_wr'] ?? '')] ?? trim($wr['type_wr'] ?? '')); ?></td></tr>
         </table>
 
-        <?php
-        $foto_indexes = [];
-        for ($fi = 1; $fi <= 3; $fi++) {
-            if (!empty($wr['foto' . $fi])) {
-                $foto_indexes[] = $fi;
-            }
-        }
-        if (!empty($foto_indexes)): ?>
-        <div class="ea-sec-hdr mb-2"><i class="bi bi-camera"></i> Gambar Kerosakan</div>
-        <div class="row g-2 mb-3">
-            <?php foreach ($foto_indexes as $i => $idx): ?>
-            <div class="col-4">
-                <a href="<?php echo baseUrl(); ?>/ajax/foto.php?wr_id=<?php echo e((string)$wr_id); ?>&idx=<?php echo $idx; ?>" target="_blank">
-                    <img src="<?php echo baseUrl(); ?>/ajax/foto.php?wr_id=<?php echo e((string)$wr_id); ?>&idx=<?php echo $idx; ?>"
-                         class="img-fluid rounded border" style="height:120px;width:100%;object-fit:cover;"
-                         alt="Gambar <?php echo $i + 1; ?>">
-                </a>
-                <div class="text-center mt-1" style="font-size:0.78rem;color:#666;">Gambar <?php echo $i + 1; ?></div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-
         <div class="ea-sec-hdr mb-2"><i class="bi bi-clock-history"></i> Status & Tarikh</div>
         <table class="table table-borderless ea-table mb-0" style="font-size:0.88rem;">
-            <tr><td class="lbl">Status</td><td><span class="badge <?php
-                echo match($st) {
-                    'COM','CLS' => 'badge-status-com',
-                    'CAN','REJ' => 'badge-status-can',
-                    'W','APP'   => 'badge-status-w',
-                    default     => 'badge-status-r',
-                };
-            ?>"><?php echo e($status_label); ?></span></td></tr>
-            <tr><td class="lbl">Tarikh Aduan</td><td><?php echo e(trim($wr['date_requested'] ?? '')); ?></td></tr>
-            <?php if (!empty($wr['date_assigned'])): ?>
-            <tr><td class="lbl">Tarikh Tugasan</td><td><?php echo e(trim($wr['date_assigned'])); ?></td></tr>
-            <?php endif; ?>
-            <?php if (!empty($wr['date_stat_chg'])): ?>
-            <tr><td class="lbl">Tarikh Kemaskini</td><td><?php echo e(trim($wr['date_stat_chg'])); ?></td></tr>
+            <tr><td class="lbl">Status</td><td><span class="badge <?php echo e($status_badge); ?>"><?php echo e($status_label); ?></span></td></tr>
+            <tr><td class="lbl">Tarikh Aduan</td><td><?php
+                $tarikh_aduan = trim($wr['date_requested_fmt'] ?? '');
+                $masa_aduan   = trim($wr['time_requested_fmt'] ?? '');
+                echo e($tarikh_aduan . ($masa_aduan ? ' ' . $masa_aduan : ''));
+            ?></td></tr>
+            <?php if (!empty($wr['date_stat_chg_fmt'])): ?>
+            <tr><td class="lbl">Tarikh Tugasan</td><td><?php echo e(trim($wr['date_stat_chg_fmt'])); ?></td></tr>
             <?php endif; ?>
             <?php if (!empty($wr['work_performance'])): ?>
             <tr><td class="lbl">Maklumbalas</td><td>
