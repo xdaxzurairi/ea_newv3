@@ -297,20 +297,18 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         justify-content: center;
         gap: 10px;
         width: 100%;
-        padding: 14px 20px;
-        border-radius: 12px;
+        padding: 13px 20px;
+        border-radius: 6px;
         font-family: 'Inter', sans-serif;
         font-size: 0.875rem;
         font-weight: 600;
         text-decoration: none;
         cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+        transition: box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease;
         border: none;
         letter-spacing: -0.01em;
     }
     .login-btn + .login-btn { margin-top: 10px; }
-    .login-btn:hover  { transform: translateY(-1px); }
-    .login-btn:active { transform: translateY(0); }
     .login-btn i { font-size: 1rem; }
 
     /* Google */
@@ -405,7 +403,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         justify-content: center;
         gap: 8px;
         padding: 12px 20px;
-        border-radius: 12px;
+        border-radius: 6px;
         background: #F0FDF6;
         border: 1.5px solid #A7F3C3;
         color: #166534;
