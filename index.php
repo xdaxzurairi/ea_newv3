@@ -153,11 +153,11 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
 
     .brand-logo {
-        height: 88px;
+        height: 96px;
         width: auto;
         object-fit: contain;
         margin-bottom: 36px;
-        filter: brightness(0) invert(1) drop-shadow(0 6px 20px rgba(0,0,0,0.25));
+        filter: drop-shadow(0 4px 16px rgba(0,0,0,0.35));
     }
 
     .brand-gold-bar {
