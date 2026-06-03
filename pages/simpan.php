@@ -76,15 +76,12 @@ if ($location == '9' && $infra == '2') {
 // zone_id mesti wujud dalam afm.zone_uitm (FK wr_zone_id); jika kosong atau tidak sah, guna NULL
 $zone_id = null;
 if ($bl_id) {
-    $zr = dbFetchOne("SELECT zone_id, bl_id, state_id, site_id FROM bl WHERE bl_id = ?", [$bl_id]);
-    if ($zr) {
-        $zone_val = trim($zr['zone_id'] ?? '');
-        if ($zone_val !== '') {
-            // Sahkan zone_id wujud dalam zone_uitm sebelum INSERT
-            $zone_ok = dbFetchOne("SELECT zone_id FROM afm.zone_uitm WHERE zone_id = ?", [$zone_val]);
-            $zone_id = $zone_ok ? $zone_val : null;
-        }
-    }
+    // Satu JOIN: ambil zone_id dari bl dan sahkan wujud dalam zone_uitm sekaligus
+    $zr = dbFetchOne(
+        "SELECT b.zone_id FROM bl b INNER JOIN afm.zone_uitm z ON z.zone_id = b.zone_id WHERE b.bl_id = ?",
+        [$bl_id]
+    );
+    $zone_id = $zr ? trim($zr['zone_id']) : null;
 }
 
 // ---- Pelapor info for INSERT ----

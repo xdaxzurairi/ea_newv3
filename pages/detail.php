@@ -52,53 +52,62 @@ $subinfra_id = trim($wr['subinfra_id'] ?? '');
 $nama_negeri = $nama_kampus = $nama_bangunan = $nama_blok = $nama_aras = $nama_ruang = '-';
 $nama_section = $nama_prob_group = $nama_prob_type = '-';
 $nama_infra = $nama_subinfra = '-';
+$bldg_id = '';
 
-if ($state_id) {
-    $r = dbFetchOne("SELECT name, state_id FROM state WHERE state_id = ?", [$state_id]);
+// Satu query untuk semua data lokasi (state, kampus, blok, bangunan, aras, ruang)
+if ($bl_id) {
+    $loc = dbFetchOne(
+        "SELECT
+            bl.name       AS bl_name,
+            bl.bldg_id    AS bldg_id,
+            st.name       AS state_name,
+            si.name       AS site_name,
+            bg.bl_name    AS bldg_name,
+            fl.name       AS fl_name,
+            rm.name       AS rm_name
+         FROM bl
+         LEFT JOIN state st ON st.state_id = ?
+         LEFT JOIN site  si ON si.state_id = ? AND si.site_id = ?
+         LEFT JOIN bldg  bg ON bg.state_id = ? AND bg.site_id = ? AND bg.bldg_id = bl.bldg_id
+         LEFT JOIN fl       ON fl.bl_id = bl.bl_id AND fl.fl_id = ?
+         LEFT JOIN rm       ON rm.bl_id = bl.bl_id AND rm.fl_id = ? AND rm.rm_id = ?
+         WHERE bl.bl_id = ?",
+        [$state_id, $state_id, $site_id, $state_id, $site_id, $fl_id, $fl_id, $rm_id, $bl_id]
+    );
+    if ($loc) {
+        $bldg_id      = trim($loc['bldg_id'] ?? '');
+        $nama_negeri  = formatCodeDesc($state_id,  trim($loc['state_name'] ?? ''));
+        $nama_kampus  = formatCodeDesc($site_id,   trim($loc['site_name']  ?? ''));
+        $nama_bangunan = formatCodeDesc($bldg_id,  trim($loc['bldg_name']  ?? ''));
+        $nama_blok    = formatCodeDesc($bl_id,     trim($loc['bl_name']    ?? ''));
+        $nama_aras    = $fl_id ? formatCodeDesc($fl_id, trim($loc['fl_name'] ?? '')) : '-';
+        $nama_ruang   = $rm_id ? formatCodeDesc($rm_id, trim($loc['rm_name'] ?? '')) : '-';
+    }
+} elseif ($state_id) {
+    $r = dbFetchOne("SELECT name FROM state WHERE state_id = ?", [$state_id]);
     $nama_negeri = formatCodeDesc($state_id, $r ? trim($r['name']) : '');
 }
 
-// Resolve bldg_id from bl -> bldg
-$bldg_id = '';
-if ($bl_id) {
-    $bl_r = dbFetchOne("SELECT site_id, state_id, bl_id, bldg_id, name, block_num FROM bl WHERE state_id = ? AND site_id = ? AND bl_id = ?", [$state_id, $site_id, $bl_id]);
-    if (!$bl_r) {
-        $bl_r = dbFetchOne("SELECT bldg_id, name FROM bl WHERE bl_id = ?", [$bl_id]);
-    }
-    if ($bl_r) {
-        $nama_blok = formatCodeDesc($bl_id, trim($bl_r['name']));
-        $bldg_id   = trim($bl_r['bldg_id'] ?? '');
+// Satu query untuk seksyen, elemen, dan masalah
+if ($section) {
+    $pt = dbFetchOne(
+        "SELECT
+            s.description  AS sec_desc,
+            pg.description AS pg_desc,
+            pt.description AS pt_desc
+         FROM section s
+         LEFT JOIN prob_group pg ON pg.section = s.section AND pg.prob_group = ?
+         LEFT JOIN probtype   pt ON pt.section = s.section AND pt.prob_group = ? AND pt.prob_type = ?
+         WHERE s.section = ?",
+        [$prob_group, $prob_group, $prob_type, $section]
+    );
+    if ($pt) {
+        $nama_section    = formatCodeDesc($section,    $pt['sec_desc'] ? descSlashToDash($pt['sec_desc']) : '');
+        $nama_prob_group = formatCodeDesc($prob_group, $pt['pg_desc']  ? descSlashToDash($pt['pg_desc'])  : '');
+        $nama_prob_type  = formatCodeDesc($prob_type,  $pt['pt_desc']  ? descSlashToDash($pt['pt_desc'])  : '');
     }
 }
 
-if ($state_id && $site_id) {
-    $r = dbFetchOne("SELECT state_id, site_id, name FROM site WHERE state_id = ? AND site_id = ?", [$state_id, $site_id]);
-    $nama_kampus = formatCodeDesc($site_id, $r ? trim($r['name']) : '');
-}
-if ($state_id && $site_id && $bldg_id) {
-    $r = dbFetchOne("SELECT bl_name, state_id, site_id, bldg_id FROM bldg WHERE state_id = ? AND site_id = ? AND bldg_id = ?", [$state_id, $site_id, $bldg_id]);
-    $nama_bangunan = formatCodeDesc($bldg_id, $r ? trim($r['bl_name']) : '');
-}
-if ($bl_id && $fl_id) {
-    $r = dbFetchOne("SELECT fl_id, name FROM fl WHERE bl_id = ? AND fl_id = ?", [$bl_id, $fl_id]);
-    $nama_aras = formatCodeDesc($fl_id, $r ? trim($r['name']) : '');
-}
-if ($rm_id && $bl_id && $fl_id) {
-    $r = dbFetchOne("SELECT rm_id, bl_id, fl_id, name FROM rm WHERE rm_id = ? AND bl_id = ? AND fl_id = ?", [$rm_id, $bl_id, $fl_id]);
-    $nama_ruang = formatCodeDesc($rm_id, $r ? trim($r['name']) : '');
-}
-if ($section) {
-    $r = dbFetchOne("SELECT section, description FROM section WHERE section = ?", [$section]);
-    $nama_section = formatCodeDesc($section, $r ? descSlashToDash($r['description']) : '');
-}
-if ($section && $prob_group) {
-    $r = dbFetchOne("SELECT section, prob_group, description FROM prob_group WHERE section = ? AND prob_group = ?", [$section, $prob_group]);
-    $nama_prob_group = formatCodeDesc($prob_group, $r ? descSlashToDash($r['description']) : '');
-}
-if ($section && $prob_group && $prob_type) {
-    $r = dbFetchOne("SELECT section, prob_group, prob_type, description FROM probtype WHERE section = ? AND prob_group = ? AND prob_type = ?", [$section, $prob_group, $prob_type]);
-    $nama_prob_type = formatCodeDesc($prob_type, $r ? descSlashToDash($r['description']) : '');
-}
 if ($infra_id) {
     $r = dbFetchOne("SELECT infra_id, infra_name FROM wr_kat_infra WHERE infra_id = ?", [$infra_id]);
     $nama_infra = formatCodeDesc($infra_id, $r ? trim($r['infra_name']) : '');

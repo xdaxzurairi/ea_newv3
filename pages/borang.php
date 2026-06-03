@@ -134,7 +134,7 @@ if ($requestor == '1') {
         $dp_row   = dbFetchOne("SELECT dp_id, name FROM dp WHERE dp_id = ?", [$dp_id]);
         $jabatan  = $dp_row ? trim($dp_row['name']) : '';
 
-        $space_row = dbFetchOne("SELECT bl_id, fl_id, rm_id FROM em WHERE em_number = ?", [$txt_emnumber]);
+        $space_row = $row; // $row sudah ada bl_id, fl_id, rm_id dari query em di atas
         $ruang_kod = '';
         $ruang_desc = '';
         if ($space_row) {

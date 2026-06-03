@@ -54,6 +54,41 @@ try {
             OFFSET " . $offsetInt . " ROWS FETCH NEXT " . $perPageInt . " ROWS ONLY";
 
     $rows = dbFetchAll($sql, [$val]);
+
+    // Batch lookup: kumpul semua bl_id dan probtype combo sekaligus
+    $blMap = [];
+    $ptMap = [];
+    if ($rows) {
+        $blIds = array_values(array_unique(array_filter(
+            array_map(fn($r) => trim($r['bl_id'] ?? ''), $rows)
+        )));
+        if ($blIds) {
+            $ph = implode(',', array_fill(0, count($blIds), '?'));
+            foreach (dbFetchAll("SELECT bl_id, name FROM bl WHERE bl_id IN ($ph)", $blIds) as $b) {
+                $blMap[trim($b['bl_id'])] = trim($b['name']);
+            }
+        }
+
+        $wherePt = [];
+        $paramsPt = [];
+        foreach ($rows as $r) {
+            $key = trim($r['section'] ?? '') . '|' . trim($r['prob_group'] ?? '') . '|' . trim($r['prob_type'] ?? '');
+            if (!array_key_exists($key, $ptMap)) {
+                $ptMap[$key] = null;
+                $wherePt[]   = '(section = ? AND prob_group = ? AND prob_type = ?)';
+                array_push($paramsPt, trim($r['section'] ?? ''), trim($r['prob_group'] ?? ''), trim($r['prob_type'] ?? ''));
+            }
+        }
+        if ($wherePt) {
+            foreach (dbFetchAll(
+                'SELECT section, prob_group, prob_type, description FROM probtype WHERE ' . implode(' OR ', $wherePt),
+                $paramsPt
+            ) as $p) {
+                $k = trim($p['section']) . '|' . trim($p['prob_group']) . '|' . trim($p['prob_type']);
+                $ptMap[$k] = trim($p['description']);
+            }
+        }
+    }
 } catch (Throwable $e) {
     $dbError   = $e->getMessage();
     $rows      = [];
@@ -112,18 +147,11 @@ require_once __DIR__ . '/../includes/header.php';
                     $info = $statusMap[$st] ?? ['label' => $st, 'badge' => 'bg-secondary'];
                     $bil  = $offset + $i + 1;
 
-                    // Lokasi name from bl_id
-                    $lokasi = $row['bl_id'] ?? '-';
-                    $bl_r = dbFetchOne("SELECT name FROM bl WHERE bl_id = ?", [trim($row['bl_id'] ?? '')]);
-                    if ($bl_r) $lokasi = trim($bl_r['name']);
+                    $blKey  = trim($row['bl_id'] ?? '');
+                    $lokasi = $blMap[$blKey] ?? ($blKey ?: '-');
 
-                    // Jenis kerosakan
-                    $jenis = '-';
-                    $pt = dbFetchOne(
-                        "SELECT description FROM probtype WHERE section = ? AND prob_group = ? AND prob_type = ?",
-                        [trim($row['section'] ?? ''), trim($row['prob_group'] ?? ''), trim($row['prob_type'] ?? '')]
-                    );
-                    if ($pt) $jenis = descSlashToDash($pt['description']);
+                    $ptKey = trim($row['section'] ?? '') . '|' . trim($row['prob_group'] ?? '') . '|' . trim($row['prob_type'] ?? '');
+                    $jenis = isset($ptMap[$ptKey]) ? descSlashToDash($ptMap[$ptKey]) : '-';
                 ?>
                 <tr>
                     <td class="col-bil">

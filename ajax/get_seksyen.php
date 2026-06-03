@@ -18,10 +18,11 @@ if ($excludeInf) {
         . " AND UPPER(TRIM(a.description)) NOT LIKE '%INF ELEKTRIK%'";
 }
 
-$sql = "SELECT DISTINCT(a.section), a.description FROM section a, probtype b"
-    . " WHERE a.section != 'PREVENTIVE MAINT' AND a.section != 'INF MEC' AND a.section != 'ICT'"
+$sql = "SELECT DISTINCT a.section, a.description FROM section a"
+    . " INNER JOIN probtype b ON b.section = a.section"
+    . " WHERE a.section NOT IN ('PREVENTIVE MAINT','INF MEC','ICT')"
     . $excludeInfEle
-    . " AND a.section = b.section AND b.prob_type NOT IN (SELECT prob_type FROM exclude_site_pg_pt WHERE site_id=?)"
+    . " AND b.prob_type NOT IN (SELECT prob_type FROM exclude_site_pg_pt WHERE site_id=?)"
     . " ORDER BY a.description ASC";
 
 $rows = dbFetchAll($sql, [$idkampus]);
