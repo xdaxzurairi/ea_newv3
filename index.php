@@ -1,7 +1,7 @@
 <?php
 /**
  * eAduan v3  Landing / Login Page
- * Revamp: Clean White Minimalist Card
+ * Revamp: Corporate Split-Screen
  * Dev: Mohammad Zurairi | XDIBAX Innovation
  */
 session_start();
@@ -26,7 +26,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>e-Aduan v3  Sistem Aduan UiTM</title>
+    <title>e-Aduan v3 — Sistem Aduan UiTM</title>
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#5B2D8E">
@@ -50,188 +50,270 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-    /*  Root Variables  */
+    /* ── Root Variables ── */
     :root {
-        --clr-purple:      #5B2D8E;
-        --clr-purple-dk:   #3D1A6E;
-        --clr-purple-lt:   #7B4FAE;
-        --clr-purple-xs:   #F3EEFF;
-        --clr-gold:        #D4A843;
-        --clr-gold-lt:     #FBF0D5;
-        --clr-bg:          #F7F5FF;
-        --clr-card:        #FFFFFF;
-        --clr-text:        #1E1532;
-        --clr-muted:       #8B8499;
-        --clr-border:      #E8E3F0;
-        --radius-card:     24px;
-        --shadow-card:     0 8px 48px rgba(91,45,142,0.10), 0 2px 12px rgba(91,45,142,0.06);
-        --shadow-btn:      0 4px 16px rgba(91,45,142,0.25);
+        --clr-purple:    #5B2D8E;
+        --clr-purple-dk: #3D1A6E;
+        --clr-purple-lt: #7B4FAE;
+        --clr-purple-xs: #F3EEFF;
+        --clr-gold:      #D4A843;
+        --clr-gold-lt:   #FBF0D5;
+        --clr-text:      #1E1532;
+        --clr-muted:     #8B8499;
+        --clr-border:    #E8E3F0;
     }
 
-    /*  Reset  */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-        min-height: 100%;
+        height: 100%;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         font-size: 15px;
         color: var(--clr-text);
     }
+    body { display: flex; min-height: 100vh; background: #FFFFFF; }
 
-    /*  Background  */
-    body {
-        background-color: var(--clr-bg);
-        background-image:
-            radial-gradient(ellipse 800px 600px at 10% 10%, rgba(91,45,142,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 600px 500px at 90% 80%, rgba(212,168,67,0.06) 0%, transparent 70%);
+    /* ══════════════════════════════════════
+       SPLIT LAYOUT
+    ══════════════════════════════════════ */
+    .login-split {
+        display: grid;
+        grid-template-columns: 46% 54%;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    /* ══════════════════════════════════════
+       LEFT — BRAND PANEL
+    ══════════════════════════════════════ */
+    .brand-panel {
+        background: linear-gradient(150deg, #5B2D8E 0%, #3D1A6E 50%, #251048 100%);
+        position: relative;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
-        padding: 24px 16px;
+        padding: 64px 52px;
+        overflow: hidden;
     }
 
-    /*  Floating blob decorations  */
-    body::before, body::after {
-        content: '';
-        position: fixed;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 0;
-    }
-    body::before {
-        width: 360px; height: 360px;
-        top: -80px; left: -80px;
-        background: radial-gradient(circle, rgba(91,45,142,0.08) 0%, transparent 70%);
-    }
-    body::after {
-        width: 280px; height: 280px;
-        bottom: -60px; right: -60px;
-        background: radial-gradient(circle, rgba(212,168,67,0.07) 0%, transparent 70%);
-    }
-
-    /*  Card  */
-    .login-card {
-        position: relative;
-        z-index: 1;
-        background: var(--clr-card);
-        border-radius: var(--radius-card);
-        box-shadow: var(--shadow-card);
-        border: 1px solid var(--clr-border);
-        width: 100%;
-        max-width: 420px;
-        padding: 48px 40px 40px;
-        animation: card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    @keyframes card-in {
-        from { opacity: 0; transform: translateY(20px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Gold top accent */
-    .login-card::before {
+    /* Dot grid overlay */
+    .brand-panel::before {
         content: '';
         position: absolute;
-        top: 0; left: 40px; right: 40px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--clr-gold), var(--clr-gold-lt), var(--clr-gold), transparent);
-        border-radius: 0 0 4px 4px;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.10) 1px, transparent 1px);
+        background-size: 28px 28px;
+        pointer-events: none;
     }
 
-    /*  Logo section  */
-    .login-logo {
+    /* Decorative ring — top right */
+    .brand-ring-1 {
+        position: absolute;
+        width: 460px; height: 460px;
+        border: 64px solid rgba(255,255,255,0.045);
+        border-radius: 50%;
+        top: -140px; right: -140px;
+        pointer-events: none;
+    }
+    /* Decorative ring — bottom left */
+    .brand-ring-2 {
+        position: absolute;
+        width: 300px; height: 300px;
+        border: 44px solid rgba(255,255,255,0.035);
+        border-radius: 50%;
+        bottom: -90px; left: -90px;
+        pointer-events: none;
+    }
+    /* Gold accent ring — mid left */
+    .brand-ring-3 {
+        position: absolute;
+        width: 160px; height: 160px;
+        border: 1.5px solid rgba(212,168,67,0.22);
+        border-radius: 50%;
+        top: 72px; left: 44px;
+        pointer-events: none;
+    }
+    /* Small filled dot cluster */
+    .brand-ring-4 {
+        position: absolute;
+        width: 80px; height: 80px;
+        border: 1.5px solid rgba(212,168,67,0.14);
+        border-radius: 50%;
+        bottom: 100px; right: 48px;
+        pointer-events: none;
+    }
+
+    .brand-content {
+        position: relative;
+        z-index: 1;
         text-align: center;
-        margin-bottom: 32px;
-    }
-    .login-logo img {
-        height: 64px;
-        width: auto;
-        margin-bottom: 16px;
-        object-fit: contain;
-        filter: drop-shadow(0 2px 8px rgba(91,45,142,0.12));
-    }
-    .login-logo-title {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--clr-purple-dk);
-        letter-spacing: -0.03em;
-        line-height: 1.2;
-        margin-bottom: 4px;
-    }
-    .login-logo-subtitle {
-        font-size: 0.8rem;
-        color: var(--clr-muted);
-        font-weight: 400;
-        letter-spacing: 0.01em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    /* ─ Section label  */
-    .login-label {
-        display: flex;
+    .brand-logo {
+        height: 88px;
+        width: auto;
+        object-fit: contain;
+        margin-bottom: 36px;
+        filter: brightness(0) invert(1) drop-shadow(0 6px 20px rgba(0,0,0,0.25));
+    }
+
+    .brand-gold-bar {
+        width: 52px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--clr-gold), rgba(251,240,213,0.5));
+        border-radius: 2px;
+        margin: 0 auto 22px;
+    }
+
+    .brand-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #FFFFFF;
+        letter-spacing: -0.045em;
+        line-height: 1.05;
+        margin-bottom: 14px;
+    }
+
+    .brand-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.60);
+        font-weight: 400;
+        line-height: 1.6;
+        max-width: 240px;
+        margin: 0 auto 40px;
+    }
+
+    .brand-badge {
+        display: inline-flex;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
+        gap: 8px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 100px;
+        padding: 9px 20px;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        backdrop-filter: blur(8px);
     }
-    .login-label::before, .login-label::after {
+    .brand-badge i { color: var(--clr-gold); font-size: 0.82rem; }
+
+    /* Version tag — bottom of brand panel */
+    .brand-version {
+        position: absolute;
+        bottom: 28px;
+        left: 0; right: 0;
+        text-align: center;
+        font-size: 0.65rem;
+        color: rgba(255,255,255,0.25);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        z-index: 1;
+    }
+
+    /* ══════════════════════════════════════
+       RIGHT — FORM PANEL
+    ══════════════════════════════════════ */
+    .form-panel {
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 64px;
+        position: relative;
+    }
+
+    /* Subtle vertical separator */
+    .form-panel::before {
         content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--clr-border);
+        position: absolute;
+        left: 0; top: 15%; bottom: 15%;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--clr-border) 30%, var(--clr-border) 70%, transparent);
     }
-    .login-label span {
+
+    .form-container {
+        width: 100%;
+        max-width: 360px;
+        animation: form-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: 0.1s;
+        opacity: 0;
+    }
+    @keyframes form-in {
+        from { opacity: 0; transform: translateX(14px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Welcome heading */
+    .form-heading {
+        margin-bottom: 36px;
+    }
+    .form-heading-eyebrow {
         font-size: 0.68rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.12em;
+        color: var(--clr-purple-lt);
+        margin-bottom: 8px;
+    }
+    .form-heading-title {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--clr-purple-dk);
+        letter-spacing: -0.035em;
+        line-height: 1.15;
+        margin-bottom: 6px;
+    }
+    .form-heading-sub {
+        font-size: 0.85rem;
         color: var(--clr-muted);
-        white-space: nowrap;
+        font-weight: 400;
     }
 
-    /*  Alert banners  */
+    /* ── Alert banners ── */
     .login-alert {
         border-radius: 10px;
         padding: 11px 14px;
         font-size: 0.8rem;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         display: flex;
         align-items: center;
         gap: 8px;
         border: 1px solid;
     }
-    .login-alert-success {
-        background: #F0FDF6;
-        border-color: #A7F3C3;
-        color: #166534;
-    }
-    .login-alert-warning {
-        background: var(--clr-gold-lt);
-        border-color: rgba(212,168,67,0.4);
-        color: #92400e;
-    }
+    .login-alert-success { background: #F0FDF6; border-color: #A7F3C3; color: #166534; }
+    .login-alert-warning { background: var(--clr-gold-lt); border-color: rgba(212,168,67,0.4); color: #92400e; }
 
-    /*  Buttons  */
+    /* ── Buttons ── */
     .login-btn {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
         width: 100%;
-        padding: 13px 20px;
+        padding: 14px 20px;
         border-radius: 12px;
         font-family: 'Inter', sans-serif;
         font-size: 0.875rem;
         font-weight: 600;
         text-decoration: none;
         cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease, border-color 0.2s ease;
         border: none;
         letter-spacing: -0.01em;
     }
     .login-btn + .login-btn { margin-top: 10px; }
-    .login-btn:hover { transform: translateY(-1px); }
+    .login-btn:hover  { transform: translateY(-1px); }
     .login-btn:active { transform: translateY(0); }
     .login-btn i { font-size: 1rem; }
 
-    /* Google button */
+    /* Google */
     .btn-google {
         background: #FFFFFF;
         color: #3C3C3C;
@@ -240,12 +322,13 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
     .btn-google:hover {
         border-color: #4285F4;
-        box-shadow: 0 2px 12px rgba(66,133,244,0.15);
+        box-shadow: 0 4px 18px rgba(66,133,244,0.15);
         color: #1a1a1a;
+        background: #FAFCFF;
     }
     .btn-google svg { flex-shrink: 0; }
 
-    /* Pengguna Luar button */
+    /* Pengguna Luar */
     .btn-luar {
         background: var(--clr-gold-lt);
         color: #7A5C10;
@@ -255,47 +338,37 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         background: var(--clr-gold);
         color: #fff;
         border-color: var(--clr-gold);
-        box-shadow: 0 4px 16px rgba(212,168,67,0.3);
+        box-shadow: 0 4px 18px rgba(212,168,67,0.30);
     }
 
-    /*  Divider  */
+    /* ── Divider ── */
     .login-divider {
         display: flex;
         align-items: center;
         gap: 12px;
-        margin: 14px 0;
+        margin: 16px 0;
     }
     .login-divider::before, .login-divider::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--clr-border);
+        content: ''; flex: 1; height: 1px; background: var(--clr-border);
     }
     .login-divider span {
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         color: #C8C0D4;
-        white-space: nowrap;
     }
 
-    /*  PWA Section  */
-    .pwa-install-section { margin-top: 6px; }
+    /* ── PWA Section ── */
+    .pwa-install-section { margin-top: 8px; }
     .pwa-install-divider {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 12px;
+        display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
     }
     .pwa-install-divider::before, .pwa-install-divider::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: var(--clr-border);
+        content: ''; flex: 1; height: 1px; background: var(--clr-border);
     }
     .pwa-install-divider span {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.1em;
@@ -317,13 +390,8 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         transform: translateX(-100%);
         animation: shimmer 2.5s infinite;
     }
-    @keyframes shimmer {
-        to { transform: translateX(100%); }
-    }
-    .btn-pwa-install:hover {
-        box-shadow: 0 4px 16px rgba(25,135,84,0.3);
-        color: #fff;
-    }
+    @keyframes shimmer { to { transform: translateX(100%); } }
+    .btn-pwa-install:hover { box-shadow: 0 4px 18px rgba(25,135,84,0.30); color: #fff; }
     .pwa-install-hint {
         text-align: center;
         font-size: 0.7rem;
@@ -345,7 +413,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         font-weight: 600;
     }
 
-    /*  iOS Modal  */
+    /* ── iOS PWA Modal (generated by JS) ── */
     .pwa-ios-overlay {
         position: fixed;
         inset: 0;
@@ -369,7 +437,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
     @keyframes slide-up {
         from { transform: translateY(40px); opacity: 0; }
-        to   { transform: translateY(0); opacity: 1; }
+        to   { transform: translateY(0);    opacity: 1; }
     }
     .pwa-ios-modal h3 {
         font-size: 0.95rem;
@@ -414,82 +482,146 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
     .pwa-ios-close:hover { background: #F5F5F5; }
 
-    /*  Footer  */
-    .login-footer {
+    /* ── Footer ── */
+    .form-footer {
         text-align: center;
-        margin-top: 28px;
-        padding-top: 20px;
+        margin-top: 32px;
+        padding-top: 24px;
         border-top: 1px solid var(--clr-border);
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         color: var(--clr-muted);
-        line-height: 1.7;
+        line-height: 1.8;
     }
-    .login-footer strong { color: #9B8ABB; }
+    .form-footer strong { color: var(--clr-purple-lt); font-weight: 600; }
 
-    /*  Responsive  */
+    /* ══════════════════════════════════════
+       RESPONSIVE — TABLET / MOBILE
+    ══════════════════════════════════════ */
+    @media (max-width: 900px) {
+        .login-split {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        /* Compact header band on mobile */
+        .brand-panel {
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 24px;
+            min-height: unset;
+        }
+        .brand-ring-1, .brand-ring-2,
+        .brand-ring-3, .brand-ring-4,
+        .brand-gold-bar, .brand-badge,
+        .brand-subtitle, .brand-version { display: none; }
+        .brand-content {
+            flex-direction: row;
+            text-align: left;
+            gap: 14px;
+            align-items: center;
+        }
+        .brand-logo { height: 44px; margin-bottom: 0; }
+        .brand-title { font-size: 1.35rem; margin-bottom: 0; }
+
+        .form-panel { padding: 40px 28px; justify-content: flex-start; padding-top: 44px; }
+        .form-panel::before { display: none; }
+        .form-container { max-width: 440px; margin: 0 auto; }
+    }
+
     @media (max-width: 480px) {
-        .login-card { padding: 36px 24px 32px; }
+        .brand-panel { padding: 18px 20px; }
+        .brand-logo  { height: 38px; }
+        .brand-title { font-size: 1.15rem; }
+        .form-panel  { padding: 32px 20px; }
     }
     </style>
 </head>
 <body>
 
-<div class="login-card">
+<div class="login-split">
 
-    <!-- Logo -->
-    <div class="login-logo">
-        <img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM">
-        <div class="login-logo-title">e-Aduan v3</div>
-        <div class="login-logo-subtitle">Universiti Teknologi MARA</div>
+    <!-- ── Left: Brand Panel ── -->
+    <div class="brand-panel">
+        <span class="brand-ring-1" aria-hidden="true"></span>
+        <span class="brand-ring-2" aria-hidden="true"></span>
+        <span class="brand-ring-3" aria-hidden="true"></span>
+        <span class="brand-ring-4" aria-hidden="true"></span>
+
+        <div class="brand-content">
+            <img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" class="brand-logo">
+            <div class="brand-gold-bar"></div>
+            <h1 class="brand-title">e-Aduan v3</h1>
+            <p class="brand-subtitle">Sistem Pengurusan Aduan Fasiliti Universiti Teknologi MARA</p>
+            <div class="brand-badge">
+                <i class="bi bi-shield-check-fill"></i>
+                Portal Rasmi UiTM
+            </div>
+        </div>
+
+        <div class="brand-version">ea_newv3 &nbsp;&middot;&nbsp; XDIBAX Innovation</div>
     </div>
 
-    <!-- Alerts -->
-    <?php if (!empty($_GET['logout'])): ?>
-    <div class="login-alert login-alert-success">
-        <i class="bi bi-check-circle-fill"></i>
-        Anda telah berjaya log keluar.
-    </div>
-    <?php endif; ?>
-    <?php if (!empty($_GET['expired'])): ?>
-    <div class="login-alert login-alert-warning">
-        <i class="bi bi-clock-history"></i>
-        Sesi anda telah tamat. Sila log masuk semula.
-    </div>
-    <?php endif; ?>
+    <!-- ── Right: Form Panel ── -->
+    <div class="form-panel">
+        <div class="form-container">
 
-    <!-- Login Options -->
-    <div class="login-label"><span>Log Masuk</span></div>
+            <div class="form-heading">
+                <div class="form-heading-eyebrow">e-Aduan v3</div>
+                <div class="form-heading-title">Selamat Datang</div>
+                <div class="form-heading-sub">Sila log masuk untuk meneruskan</div>
+            </div>
 
-    <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
-        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-            <path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.01 24.01 0 0 0 0 21.56l7.98-6.19z"/>
-            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        </svg>
-        Log masuk dengan Google
-    </a>
+            <!-- Alerts -->
+            <?php if (!empty($_GET['logout'])): ?>
+            <div class="login-alert login-alert-success">
+                <i class="bi bi-check-circle-fill"></i>
+                Anda telah berjaya log keluar.
+            </div>
+            <?php endif; ?>
+            <?php if (!empty($_GET['expired'])): ?>
+            <div class="login-alert login-alert-warning">
+                <i class="bi bi-clock-history"></i>
+                Sesi anda telah tamat. Sila log masuk semula.
+            </div>
+            <?php endif; ?>
 
-    <div class="login-divider"><span>atau</span></div>
+            <!-- Google Login -->
+            <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.01 24.01 0 0 0 0 21.56l7.98-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Log masuk dengan Google
+            </a>
 
-    <a href="<?php echo baseUrl(); ?>/pages/daftar_luar.php" class="login-btn btn-luar">
-        <i class="bi bi-person-lines-fill"></i>
-        Pengguna Luar
-    </a>
+            <div class="login-divider"><span>atau</span></div>
 
-    <!-- PWA Install Section -->
-    <div id="pwa-install-section" class="pwa-install-section">
-        <div class="pwa-install-divider"><span>Pasang Aplikasi</span></div>
-        <button id="pwa-install-main-btn" class="login-btn btn-pwa-install" type="button">
-            <i class="bi bi-download"></i> Pasang e-Aduan
-        </button>
-        <p class="pwa-install-hint" id="pwa-install-hint"></p>
-    </div>
+            <!-- Pengguna Luar -->
+            <a href="<?php echo baseUrl(); ?>/pages/daftar_luar.php" class="login-btn btn-luar">
+                <i class="bi bi-person-lines-fill"></i>
+                Pengguna Luar
+            </a>
 
-    <!-- Footer -->
-    <div class="login-footer">
-        <strong>e-Aduan v3</strong> &nbsp;&middot;&nbsp; Bahagian Pengurusan Fasiliti<br>
-        &copy; <?php echo date('Y'); ?> Universiti Teknologi MARA
+            <!-- PWA Install -->
+            <div id="pwa-install-section" class="pwa-install-section">
+                <div class="pwa-install-divider"><span>Pasang Aplikasi</span></div>
+                <button id="pwa-install-main-btn" class="login-btn btn-pwa-install" type="button">
+                    <i class="bi bi-download"></i> Pasang e-Aduan
+                </button>
+                <p class="pwa-install-hint" id="pwa-install-hint"></p>
+            </div>
+
+            <!-- Footer -->
+            <div class="form-footer">
+                <strong>Bahagian Pengurusan Fasiliti</strong><br>
+                &copy; <?php echo date('Y'); ?> Universiti Teknologi MARA. Hak cipta terpelihara.
+            </div>
+
+        </div>
     </div>
 
 </div>
@@ -497,29 +629,18 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 <script src="<?php echo baseUrl(); ?>/assets/js/pwa-register.js"></script>
 <script src="<?php echo baseUrl(); ?>/assets/js/pwa-install.js"></script>
 <script>
-/*  Console Marker  */
 (function () {
-    var style = [
-        'background: linear-gradient(135deg, #5B2D8E, #3D1A6E)',
-        'color: #FFFFFF',
-        'padding: 6px 14px',
-        'border-radius: 4px',
-        'font-family: Inter, sans-serif',
-        'font-size: 12px',
-        'font-weight: 700',
-        'letter-spacing: 0.08em',
+    var s = [
+        'background:linear-gradient(135deg,#5B2D8E,#3D1A6E)',
+        'color:#FFF', 'padding:6px 14px', 'border-radius:4px',
+        'font-family:Inter,sans-serif', 'font-size:12px',
+        'font-weight:700', 'letter-spacing:0.08em',
     ].join(';');
-    var styleGold = [
-        'background: transparent',
-        'color: #D4A843',
-        'font-family: Inter, sans-serif',
-        'font-size: 11px',
-        'font-weight: 500',
-    ].join(';');
-    console.log('%c e-Aduan v3 %c', style, 'background:transparent');
-    console.log('%c Developer  : Mohammad Zurairi', styleGold);
-    console.log('%c System     : ea_newv3 | XDIBAX Innovation', styleGold);
-    console.log('%c Build      : ' + new Date().getFullYear() + ' @ UiTM', styleGold);
+    var g = 'background:transparent;color:#D4A843;font-family:Inter,sans-serif;font-size:11px;font-weight:500;';
+    console.log('%c e-Aduan v3 %c', s, '');
+    console.log('%c Developer  : Mohammad Zurairi', g);
+    console.log('%c System     : ea_newv3 | XDIBAX Innovation', g);
+    console.log('%c Build      : ' + new Date().getFullYear() + ' @ UiTM', g);
 })();
 </script>
 </body>

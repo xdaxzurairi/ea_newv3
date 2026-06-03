@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(git -C \"//10.0.36.127/webs/ea_newv3\" rev-parse --show-toplevel)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Read(///10.0.36.127/webs//**)",
+      "Bash(git push *)",
+      "Bash(git remote *)"
     ]
   }
 }
