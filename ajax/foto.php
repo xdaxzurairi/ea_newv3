@@ -1,10 +1,11 @@
 <?php
 /**
- * eAduan v3 – Serve Foto Kerosakan dari filesystem
+ * eAduan v3 – Serve Foto Kerosakan (lokal legacy atau MinIO)
  * ?wr_id=X&idx=Y  (idx: 1, 2, atau 3)
  */
 session_start();
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/minio.php';
 
 if (empty($_SESSION['sso_authenticated'])) {
     http_response_code(403);
@@ -27,7 +28,21 @@ if (!$row || empty($row['filename'])) {
     exit;
 }
 
-$filename = basename($row['filename']);
+$stored = $row['filename'];
+
+// Key MinIO (baru) mengandungi '/' (contoh: ea_newv3/wr/123/foto1.jpg).
+// Nama fail lokal lama sentiasa flat (contoh: wr_123_1.jpg), tiada '/'.
+if (strpos($stored, '/') !== false) {
+    $url = minioPresignedUrl($stored);
+    if ($url === null) {
+        http_response_code(503);
+        exit;
+    }
+    header('Location: ' . $url, true, 302);
+    exit;
+}
+
+$filename = basename($stored);
 $path     = __DIR__ . '/../uploads/wr/' . $filename;
 
 if (!file_exists($path)) {

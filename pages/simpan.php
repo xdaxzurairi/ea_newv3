@@ -5,6 +5,7 @@
  */
 session_start();
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/minio.php';
 
 if (empty($_SESSION['sso_authenticated'])) {
     header('Location: ' . baseUrl() . '/index.php');
@@ -164,10 +165,20 @@ function simpanFotoDB(PDO $pdo, int $wr_id): void
         if (!file_exists($src)) continue;
 
         $ext  = pathinfo($fn, PATHINFO_EXTENSION);
-        $dest = 'wr_' . $wr_id . '_' . ($fi + 1) . '.' . $ext;
+        $col  = 'foto' . ($fi + 1);
 
+        // Cuba MinIO dahulu; jika gagal (down/tiada config), fallback simpan lokal macam biasa
+        // supaya submission borang tidak terjejas oleh storan pihak ketiga.
+        $minioKey = minioUpload($src, "{$wr_id}/foto" . ($fi + 1) . ".{$ext}");
+        if ($minioKey !== null) {
+            @unlink($src);
+            $updates[] = "{$col} = ?";
+            $params[]  = $minioKey;
+            continue;
+        }
+
+        $dest = 'wr_' . $wr_id . '_' . ($fi + 1) . '.' . $ext;
         if (rename($src, $uploadDir . $dest)) {
-            $col       = 'foto' . ($fi + 1);
             $updates[] = "{$col} = ?";
             $params[]  = $dest;
         }

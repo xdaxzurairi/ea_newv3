@@ -1,7 +1,7 @@
 <?php
 /**
  * eAduan v3  Landing / Login Page
- * Revamp: Clean White Minimalist Card
+ * Revamp: Corporate Split-Screen Login
  * Dev: Mohammad Zurairi | XDIBAX Innovation
  */
 session_start();
@@ -50,7 +50,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-    /*  Root Variables  */
+    /* ── Root Variables ── */
     :root {
         --clr-purple:      #5B2D8E;
         --clr-purple-dk:   #3D1A6E;
@@ -58,113 +58,184 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         --clr-purple-xs:   #F3EEFF;
         --clr-gold:        #D4A843;
         --clr-gold-lt:     #FBF0D5;
-        --clr-bg:          #F7F5FF;
-        --clr-card:        #FFFFFF;
+        --clr-bg:          #FFFFFF;
         --clr-text:        #1E1532;
         --clr-muted:       #8B8499;
         --clr-border:      #E8E3F0;
-        --radius-card:     24px;
-        --shadow-card:     0 8px 48px rgba(91,45,142,0.10), 0 2px 12px rgba(91,45,142,0.06);
         --shadow-btn:      0 4px 16px rgba(91,45,142,0.25);
     }
 
-    /*  Reset  */
+    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-        min-height: 100%;
+        height: 100%;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         font-size: 15px;
         color: var(--clr-text);
     }
+    body { background: var(--clr-bg); }
 
-    /*  Background  */
-    body {
-        background-color: var(--clr-bg);
-        background-image:
-            radial-gradient(ellipse 800px 600px at 10% 10%, rgba(91,45,142,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 600px 500px at 90% 80%, rgba(212,168,67,0.06) 0%, transparent 70%);
+    /* ── Split Screen Shell ── */
+    .split-shell {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 100vh;
+    }
+
+    /* ── Brand Panel (kiri) ── */
+    .brand-panel {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(150deg, var(--clr-purple) 0%, var(--clr-purple-dk) 55%, #241246 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 56px 64px;
+        color: #fff;
+        animation: panel-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .brand-panel img.bg-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 42%;
+        opacity: 0.16;
+        filter: grayscale(0.3) contrast(1.2);
+        animation: kenburns 24s ease-in-out infinite alternate;
+    }
+
+    .brand-panel::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(200deg, rgba(212,168,67,0.18) 0%, transparent 40%, rgba(30,21,50,0.55) 100%);
+    }
+
+    .brand-content { position: relative; z-index: 2; }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 64px;
+    }
+    .brand-logo img { height: 44px; width: auto; object-fit: contain; }
+    .brand-logo-text { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+    .brand-logo-text small { display: block; font-size: 0.72rem; font-weight: 400; color: rgba(255,255,255,0.65); }
+
+    .brand-heading {
+        font-size: 2.4rem;
+        font-weight: 800;
+        line-height: 1.18;
+        letter-spacing: -0.02em;
+        margin-bottom: 18px;
+        max-width: 460px;
+    }
+    .brand-heading span { color: var(--clr-gold); }
+
+    .brand-sub {
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.72);
+        line-height: 1.7;
+        max-width: 400px;
+    }
+
+    .brand-features {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 40px;
+    }
+    .brand-feature {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.85);
+    }
+    .brand-feature i {
+        width: 32px; height: 32px;
+        border-radius: 9px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
-        padding: 24px 16px;
+        font-size: 0.95rem;
+        color: var(--clr-gold);
+        flex-shrink: 0;
     }
 
-    /*  Floating blob decorations  */
-    body::before, body::after {
-        content: '';
-        position: fixed;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 0;
-    }
-    body::before {
-        width: 360px; height: 360px;
-        top: -80px; left: -80px;
-        background: radial-gradient(circle, rgba(91,45,142,0.08) 0%, transparent 70%);
-    }
-    body::after {
-        width: 280px; height: 280px;
-        bottom: -60px; right: -60px;
-        background: radial-gradient(circle, rgba(212,168,67,0.07) 0%, transparent 70%);
-    }
-
-    /*  Card  */
-    .login-card {
+    .brand-footer {
         position: relative;
-        z-index: 1;
-        background: var(--clr-card);
-        border-radius: var(--radius-card);
-        box-shadow: var(--shadow-card);
-        border: 1px solid var(--clr-border);
-        width: 100%;
-        max-width: 420px;
-        padding: 48px 40px 40px;
-        animation: card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+        z-index: 2;
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.5);
+        padding-top: 24px;
+        border-top: 1px solid rgba(255,255,255,0.12);
     }
-    @keyframes card-in {
-        from { opacity: 0; transform: translateY(20px); }
+
+    @keyframes kenburns {
+        from { transform: scale(1) translate(0, 0); }
+        to   { transform: scale(1.1) translate(-2%, 1.5%); }
+    }
+    @keyframes panel-in {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .brand-panel img.bg-image { animation: none; }
+    }
+
+    /* ── Form Panel (kanan) ── */
+    .form-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 32px;
+        background: var(--clr-bg);
+    }
+
+    .form-wrap {
+        width: 100%;
+        max-width: 380px;
+        animation: form-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: 0.1s;
+        opacity: 0;
+    }
+    @keyframes form-in {
+        from { opacity: 0; transform: translateY(16px); }
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Gold top accent */
-    .login-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 40px; right: 40px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--clr-gold), var(--clr-gold-lt), var(--clr-gold), transparent);
-        border-radius: 0 0 4px 4px;
-    }
-
-    /*  Logo section  */
-    .login-logo {
+    .form-mobile-logo {
+        display: none;
         text-align: center;
         margin-bottom: 32px;
     }
-    .login-logo img {
-        height: 64px;
-        width: auto;
-        margin-bottom: 16px;
-        object-fit: contain;
-        filter: drop-shadow(0 2px 8px rgba(91,45,142,0.12));
-    }
-    .login-logo-title {
+    .form-mobile-logo img { height: 56px; width: auto; margin-bottom: 12px; }
+    .form-mobile-logo-title { font-size: 1.3rem; font-weight: 800; color: var(--clr-purple-dk); }
+    .form-mobile-logo-sub { font-size: 0.78rem; color: var(--clr-muted); }
+
+    .form-heading {
         font-size: 1.5rem;
         font-weight: 800;
-        color: var(--clr-purple-dk);
-        letter-spacing: -0.03em;
-        line-height: 1.2;
-        margin-bottom: 4px;
+        color: var(--clr-text);
+        letter-spacing: -0.02em;
+        margin-bottom: 6px;
     }
-    .login-logo-subtitle {
-        font-size: 0.8rem;
+    .form-sub {
+        font-size: 0.85rem;
         color: var(--clr-muted);
-        font-weight: 400;
-        letter-spacing: 0.01em;
+        margin-bottom: 32px;
     }
 
-    /* ─ Section label  */
+    /* ── Section label ── */
     .login-label {
         display: flex;
         align-items: center;
@@ -186,7 +257,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         white-space: nowrap;
     }
 
-    /*  Alert banners  */
+    /* ── Alert banners ── */
     .login-alert {
         border-radius: 10px;
         padding: 11px 14px;
@@ -208,7 +279,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         color: #92400e;
     }
 
-    /*  Buttons  */
+    /* ── Buttons ── */
     .login-btn {
         display: flex;
         align-items: center;
@@ -216,7 +287,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         gap: 10px;
         width: 100%;
         padding: 13px 20px;
-        border-radius: 12px;
+        border-radius: 10px;
         font-family: 'Inter', sans-serif;
         font-size: 0.875rem;
         font-weight: 600;
@@ -258,7 +329,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         box-shadow: 0 4px 16px rgba(212,168,67,0.3);
     }
 
-    /*  Divider  */
+    /* ── Divider ── */
     .login-divider {
         display: flex;
         align-items: center;
@@ -280,7 +351,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         white-space: nowrap;
     }
 
-    /*  PWA Section  */
+    /* ── PWA Section ── */
     .pwa-install-section { margin-top: 6px; }
     .pwa-install-divider {
         display: flex;
@@ -345,7 +416,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         font-weight: 600;
     }
 
-    /*  iOS Modal  */
+    /* ── iOS Modal ── */
     .pwa-ios-overlay {
         position: fixed;
         inset: 0;
@@ -414,7 +485,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
     .pwa-ios-close:hover { background: #F5F5F5; }
 
-    /*  Footer  */
+    /* ── Footer ── */
     .login-footer {
         text-align: center;
         margin-top: 28px;
@@ -426,70 +497,114 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     }
     .login-footer strong { color: #9B8ABB; }
 
-    /*  Responsive  */
+    /* ── Responsive ── */
+    @media (max-width: 992px) {
+        .split-shell { grid-template-columns: 1fr; }
+        .brand-panel { display: none; }
+        .form-mobile-logo { display: block; }
+        .form-panel { min-height: 100vh; }
+    }
     @media (max-width: 480px) {
-        .login-card { padding: 36px 24px 32px; }
+        .form-panel { padding: 32px 20px; }
     }
     </style>
 </head>
 <body>
 
-<div class="login-card">
+<div class="split-shell">
 
-    <!-- Logo -->
-    <div class="login-logo">
-        <img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM">
-        <div class="login-logo-title">e-Aduan v3</div>
-        <div class="login-logo-subtitle">Universiti Teknologi MARA</div>
+    <!-- Brand Panel -->
+    <div class="brand-panel">
+        <img class="bg-image" src="<?php echo baseUrl(); ?>/assets/images/bg-login.png" alt="" aria-hidden="true">
+
+        <div class="brand-content">
+            <div class="brand-logo">
+                <img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM">
+                <div class="brand-logo-text">
+                    e-Aduan v3
+                    <small>Universiti Teknologi MARA</small>
+                </div>
+            </div>
+
+            <h1 class="brand-heading">Pengurusan aduan fasiliti yang <span>pantas &amp; telus</span>.</h1>
+            <p class="brand-sub">Platform rasmi untuk staf dan pelajar UiTM melaporkan dan menjejaki isu fasiliti kampus secara langsung.</p>
+        </div>
+
+        <div class="brand-features">
+            <div class="brand-feature"><i class="bi bi-shield-check"></i> Akses selamat melalui SSO &amp; Google</div>
+            <div class="brand-feature"><i class="bi bi-lightning-charge"></i> Status aduan dikemas kini masa nyata</div>
+            <div class="brand-feature"><i class="bi bi-phone"></i> Boleh dipasang sebagai aplikasi mudah alih</div>
+        </div>
+
+        <div class="brand-footer">
+            &copy; <?php echo date('Y'); ?> Universiti Teknologi MARA &nbsp;&middot;&nbsp; Bahagian Pengurusan Fasiliti
+        </div>
     </div>
 
-    <!-- Alerts -->
-    <?php if (!empty($_GET['logout'])): ?>
-    <div class="login-alert login-alert-success">
-        <i class="bi bi-check-circle-fill"></i>
-        Anda telah berjaya log keluar.
+    <!-- Form Panel -->
+    <div class="form-panel">
+    <div class="form-wrap">
+
+        <!-- Mobile-only logo (shown when brand panel hidden) -->
+        <div class="form-mobile-logo">
+            <img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM">
+            <div class="form-mobile-logo-title">e-Aduan v3</div>
+            <div class="form-mobile-logo-sub">Universiti Teknologi MARA</div>
+        </div>
+
+        <h2 class="form-heading">Selamat Datang</h2>
+        <p class="form-sub">Log masuk untuk meneruskan ke sistem e-Aduan.</p>
+
+        <!-- Alerts -->
+        <?php if (!empty($_GET['logout'])): ?>
+        <div class="login-alert login-alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            Anda telah berjaya log keluar.
+        </div>
+        <?php endif; ?>
+        <?php if (!empty($_GET['expired'])): ?>
+        <div class="login-alert login-alert-warning">
+            <i class="bi bi-clock-history"></i>
+            Sesi anda telah tamat. Sila log masuk semula.
+        </div>
+        <?php endif; ?>
+
+        <!-- Login Options -->
+        <div class="login-label"><span>Log Masuk</span></div>
+
+        <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
+            <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.01 24.01 0 0 0 0 21.56l7.98-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Log masuk dengan Google
+        </a>
+
+        <div class="login-divider"><span>atau</span></div>
+
+        <a href="<?php echo baseUrl(); ?>/pages/daftar_luar.php" class="login-btn btn-luar">
+            <i class="bi bi-person-lines-fill"></i>
+            Pengguna Luar
+        </a>
+
+        <!-- PWA Install Section -->
+        <div id="pwa-install-section" class="pwa-install-section">
+            <div class="pwa-install-divider"><span>Pasang Aplikasi</span></div>
+            <button id="pwa-install-main-btn" class="login-btn btn-pwa-install" type="button">
+                <i class="bi bi-download"></i> Pasang e-Aduan
+            </button>
+            <p class="pwa-install-hint" id="pwa-install-hint"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <strong>e-Aduan v3</strong> &nbsp;&middot;&nbsp; Bahagian Pengurusan Fasiliti<br>
+            &copy; <?php echo date('Y'); ?> Universiti Teknologi MARA
+        </div>
+
     </div>
-    <?php endif; ?>
-    <?php if (!empty($_GET['expired'])): ?>
-    <div class="login-alert login-alert-warning">
-        <i class="bi bi-clock-history"></i>
-        Sesi anda telah tamat. Sila log masuk semula.
-    </div>
-    <?php endif; ?>
-
-    <!-- Login Options -->
-    <div class="login-label"><span>Log Masuk</span></div>
-
-    <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
-        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-            <path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.01 24.01 0 0 0 0 21.56l7.98-6.19z"/>
-            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        </svg>
-        Log masuk dengan Google
-    </a>
-
-    <div class="login-divider"><span>atau</span></div>
-
-    <a href="<?php echo baseUrl(); ?>/pages/daftar_luar.php" class="login-btn btn-luar">
-        <i class="bi bi-person-lines-fill"></i>
-        Pengguna Luar
-    </a>
-
-    <!-- PWA Install Section -->
-    <div id="pwa-install-section" class="pwa-install-section">
-        <div class="pwa-install-divider"><span>Pasang Aplikasi</span></div>
-        <button id="pwa-install-main-btn" class="login-btn btn-pwa-install" type="button">
-            <i class="bi bi-download"></i> Pasang e-Aduan
-        </button>
-        <p class="pwa-install-hint" id="pwa-install-hint"></p>
-    </div>
-
-    <!-- Footer -->
-    <div class="login-footer">
-        <strong>e-Aduan v3</strong> &nbsp;&middot;&nbsp; Bahagian Pengurusan Fasiliti<br>
-        &copy; <?php echo date('Y'); ?> Universiti Teknologi MARA
     </div>
 
 </div>
@@ -497,7 +612,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 <script src="<?php echo baseUrl(); ?>/assets/js/pwa-register.js"></script>
 <script src="<?php echo baseUrl(); ?>/assets/js/pwa-install.js"></script>
 <script>
-/*  Console Marker  */
+/* ── Console Marker ── */
 (function () {
     var style = [
         'background: linear-gradient(135deg, #5B2D8E, #3D1A6E)',
