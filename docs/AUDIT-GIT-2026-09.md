@@ -57,6 +57,31 @@ Corak commit menunjukkan kerja berlaku di luar git: 7 commit pada 3 Jun, kemudia
 
 ---
 
+## Jadual penemuan penuh
+
+| # | Kategori | Penemuan | Bukti | Kesan | Risiko |
+|---|---|---|---|---|---|
+| 1 | Data | Gambar aduan sebenar pengguna dalam version control | `uploads/wr/wr_*.jpg` — 12 fail, 1.5 MB; commit `16d8cdf`, `98dea8f`, `05400b0` | Data orang awam kekal dalam sejarah git; tidak boleh dipadam bersih tanpa `filter-repo` | **Tinggi (PDPA)** |
+| 2 | Keselamatan | Fail `.bak` dalam web root production | `index.php.bak`, `pages/semak.php.bak`, `assets/css/style.css.bak` | IIS tiada handler `.bak` → dihidangkan sebagai teks biasa. `semak.php.bak` mengandungi 4 rujukan logik DB/PDO | **Tinggi** |
+| 3 | Keselamatan | `web.config` hanya sekat `.env` dan `.env.example` | Tiada `<fileExtensions>` untuk `.bak`, `.old`, `.sql`, `.zip`, `.md` | Punca langsung penemuan #2 | **Tinggi** |
+| 4 | Keselamatan | `uploads/.htaccess` tidak berfungsi | Fail konfigurasi Apache pada pelayan IIS | Kawalan "block PHP execution in uploads" wujud di atas kertas sahaja; folder upload tiada perlindungan sebenar | **Tinggi** |
+| 5 | Pendedahan | IP dalaman dan nama DB dalam repo | `10.0.36.97` (DB), `10.0.36.127` (file server), endpoint MinIO — termasuk nilai sebenar dalam `.env.example` | Struktur rangkaian dalaman terdedah jika repo bocor atau ditukar public | Sederhana |
+| 6 | Pendedahan | Konfigurasi mesin peribadi di-commit | `.claude/settings.local.json` — laluan `//10.0.36.127/webs/`, kebenaran `Bash(git push *)` | Fail tempatan tidak sepatutnya dalam repo bersama | Rendah |
+| 7 | Proses | Semua kerja terus ke `master` | 16 commit, 0 merge commit, 0 pull request, tiada branch kerja | Tiada semakan sebelum masuk, tiada rekod sebab perubahan | Sederhana |
+| 8 | Proses | Tiada tag atau release | `git tag` kosong | Tiada cara tahu versi mana yang live; tiada titik rollback | **Tinggi** |
+| 9 | Proses | Tiada CI/CD | Tiada `.github/workflows` | Tiada pemeriksaan automatik langsung sebelum deploy | Sederhana |
+| 10 | Proses | Deployment manual ke file share | `docs/SOP-dev-to-prod.md` → salin ke `\\10.0.36.127\webs\ea_newv3\` | Punca kebenaran ialah SMB share, bukan git; dev dan prod boleh terpisah tanpa disedari | **Tinggi** |
+| 11 | Kualiti | Tiada ujian langsung | Tiada PHPUnit, tiada smoke test automatik | Pengesahan bergantung pada checklist manual 7 item | Sederhana |
+| 12 | Organisasi | Bus factor = 1 | Zurairi satu-satunya penyumbang (15 commit + 1 sebagai `nnkmz`, e-mel sama) | Tiada orang kedua boleh deploy atau semak | **Tinggi** |
+| 13 | Dokumentasi | Tiada README | `docs/` ada SOP, SYSTEM-OVERVIEW, FLOW-ADUAN — tapi tiada titik masuk | Onboarding orang baru bergantung sepenuhnya pada seorang individu | Rendah |
+| 14 | Disiplin commit | Mesej commit tidak konsisten | `04895cb` bernama "commit"; `1e1cf5c` gabung 3 kerja berbeza dalam 1,631 baris | Sukar jejak punca bila berlaku regresi | Rendah |
+| 15 | Kebersihan repo | Fail sesi AI & diari peribadi dalam repo production | `daily-diary/`, `memories/session/latest-session-recap.txt` (laluan `C:/Users/BSM/...`), `.cursor/rules/` | Kekeliruan skop; fail bukan sebahagian sistem | Rendah |
+| 16 | Konfigurasi | Tiada `.gitattributes` | — | Risiko masalah line ending antara Windows dev dan pelayan IIS | Rendah |
+
+**Corak yang mengikat penemuan 7, 8 dan 10:** enam hari aktif dalam lima bulan — tujuh commit pada 3 Jun, kosong dua bulan, satu commit pada 5 Ogos. Kerja sebenar berlaku pada file share dan git dikemaskini sekali-sekala sebagai salinan.
+
+---
+
 ## Cadangan
 
 ### Segera (minggu ini, kos: masa sahaja)
