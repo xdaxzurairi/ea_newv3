@@ -916,4 +916,4 @@ function reqText(name, label, errors) {
 
 </script>
 <script>window.EA_BASE = '<?php echo baseUrl(); ?>';</script>
-<script src="<?php echo baseUrl(); ?>/assets/js/foto-upload.js"></script>
+<script src="<?php echo baseUrl(); ?>/assets/js/foto-upload.js?v=<?php echo filemtime(__DIR__ . '/../assets/js/foto-upload.js'); ?>"></script>

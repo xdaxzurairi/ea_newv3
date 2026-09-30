@@ -163,12 +163,7 @@ $status_badge = $statusInfo['badge'];
 
 $mediumLabels = getMediumLabels();
 
-$type_req_labels = [
-    '1' => 'Staf UiTM',
-    '2' => 'Pelajar',
-    '3' => 'Pengguna Luar',
-    '5' => 'Inisiatif (Penyelia)',
-];
+$type_req_labels = getTypeReqLabels();
 $type_req_val   = trim($wr['type_req'] ?? '');
 $type_req_label = $type_req_labels[$type_req_val] ?? 'Staf UiTM';
 

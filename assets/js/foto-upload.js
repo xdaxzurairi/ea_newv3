@@ -76,6 +76,8 @@
         var formData = new FormData();
         formData.append('foto', file);
         formData.append('index', index);
+        var csrfEl = document.querySelector('input[name="csrf_token"]');
+        formData.append('csrf_token', csrfEl ? csrfEl.value : '');
 
         fetch(BASE + '/ajax/upload_foto.php', { method: 'POST', body: formData })
             .then(function (r) { return r.json(); })

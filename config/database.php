@@ -47,8 +47,11 @@ if ($pdo === null) {
     if (php_sapi_name() === 'cli') {
         throw $lastException ?? new \RuntimeException('Tiada PDO driver SQL Server.');
     }
-    $show = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)
-         || !empty($_GET['db_debug']);
+    // Butiran hanya untuk akses localhost (param ?db_debug dibuang — sesiapa boleh set)
+    $show = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true);
+    if ($lastException) {
+        error_log('DB connect gagal: ' . $lastException->getMessage());
+    }
     header('Content-Type: text/html; charset=utf-8');
     echo '<p><strong>Ralat sambungan pangkalan data.</strong></p>';
     if ($show && $lastException) {

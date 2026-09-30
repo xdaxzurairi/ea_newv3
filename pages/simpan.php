@@ -161,7 +161,8 @@ function simpanFotoDB(PDO $pdo, int $wr_id): void
 
     for ($fi = 0; $fi < 3; $fi++) {
         $fn = post('foto_' . $fi, '');
-        if (!$fn || !preg_match('/^tmp_[a-zA-Z0-9]+_\d+_\d+\.(jpg|jpeg|png|gif|webp)$/', $fn)) continue;
+        // Hanya fail temp milik sesi ini (elak lampir gambar pengguna lain)
+        if (!$fn || !preg_match('/^tmp_' . preg_quote(uploadToken(), '/') . '_\d+_\d+\.jpg$/', $fn)) continue;
         $src = __DIR__ . '/../uploads/temp/' . $fn;
         if (!file_exists($src)) continue;
 
@@ -303,7 +304,8 @@ try {
     }
 } catch (Exception $ex) {
     $success = false;
-    $errorMsg = $ex->getMessage();
+    // Butiran ralat ke log sahaja — jangan dedah struktur DB kepada pengguna
+    error_log('simpan aduan gagal: ' . $ex->getMessage());
 }
 
 // Simpan gambar selepas aduan berjaya (kegagalan gambar tidak affect status aduan)

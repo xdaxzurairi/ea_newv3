@@ -9,6 +9,10 @@ uploads/temp/*
 uploads/work_request/*
 !uploads/work_request/.gitkeep
 
+# Gambar aduan (fallback lokal bila MinIO gagal) — data pengguna, jangan commit
+uploads/wr/*
+!uploads/wr/.gitkeep
+
 # OS files
 Thumbs.db
 .DS_Store

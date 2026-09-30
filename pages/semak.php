@@ -90,7 +90,8 @@ try {
         }
     }
 } catch (Throwable $e) {
-    $dbError   = $e->getMessage();
+    error_log('semak aduan gagal: ' . $e->getMessage());
+    $dbError   = true;
     $rows      = [];
     $totalRows = 0;
     $totalPages = 1;
@@ -110,8 +111,7 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="card-body p-3">
         <?php if ($dbError): ?>
         <div class="alert alert-danger" style="font-size:0.85rem;">
-            <strong>Ralat pangkalan data.</strong><br>
-            <code><?php echo e($dbError); ?></code>
+            <strong>Ralat pangkalan data.</strong> Sila cuba sebentar lagi atau hubungi pentadbir.
         </div>
         <?php endif; ?>
 

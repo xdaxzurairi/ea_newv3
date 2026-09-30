@@ -18,6 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['foto'])) {
     exit;
 }
 
+// CSRF (respons JSON — validateCsrf() pulang teks biasa)
+if (empty($_SESSION['csrf_token']) || !hash_equals((string) $_SESSION['csrf_token'], (string) ($_POST['csrf_token'] ?? ''))) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Permintaan tidak sah. Sila refresh halaman dan cuba semula.']);
+    exit;
+}
+
 $file = $_FILES['foto'];
 
 if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -56,7 +63,7 @@ if ($compressed === false) {
     exit;
 }
 
-$token = session_id();
+$token = uploadToken();
 $index = (int) ($_POST['index'] ?? 0);
 if ($index < 0 || $index > 2) {
     echo json_encode(['success' => false, 'error' => 'Index gambar tidak sah.']);

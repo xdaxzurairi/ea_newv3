@@ -16,7 +16,7 @@ if (!preg_match('/^tmp_[a-zA-Z0-9]+_\d+_\d+\.jpg$/', $fn)) {
     exit;
 }
 
-$token = session_id();
+$token = uploadToken();
 if (strpos($fn, 'tmp_' . $token . '_') !== 0) {
     http_response_code(403);
     exit;

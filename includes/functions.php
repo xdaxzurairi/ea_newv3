@@ -163,6 +163,18 @@ function validateCsrf(): void
     }
 }
 
+/**
+ * Token rawak per sesi untuk nama fail foto sementara (tmp_{token}_...).
+ * Ganti session_id() supaya ID sesi tidak terdedah dalam nama fail awam.
+ */
+function uploadToken(): string
+{
+    if (empty($_SESSION['upload_token'])) {
+        $_SESSION['upload_token'] = bin2hex(random_bytes(12));
+    }
+    return $_SESSION['upload_token'];
+}
+
 /** Jana session ID baru selepas login (elak session fixation) */
 function regenerateLoginSession(): void
 {
@@ -220,6 +232,27 @@ function getMediumLabels(): array
         '7' => 'E-mail',
         '8' => 'Minit Mesyuarat',
     ];
+}
+
+/** Label kategori pengadu (kolum type_req dalam jadual wr), ikut nilai yang ditulis simpan.php */
+function getTypeReqLabels(): array
+{
+    return [
+        '1' => 'Staf UiTM',
+        '2' => 'Pelajar',
+        '3' => 'Pengguna Luar',
+        '5' => 'Inisiatif (Penyelia)',
+    ];
+}
+
+/** Root pelayan FMS (scheme://host) diterbitkan dari BASE_URL — ikut persekitaran dev/prod */
+function fmsRootUrl(): string
+{
+    $p = parse_url(baseUrl());
+    if (empty($p['host'])) {
+        return baseUrl();
+    }
+    return ($p['scheme'] ?? 'https') . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : '');
 }
 
 /** Papar deskripsi jenis kerosakan: tanda / diganti dengan - */
