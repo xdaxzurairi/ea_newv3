@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * eAduan v3 – OTP e-mel untuk log masuk Pengguna Luar.
- * Kod disimpan sebagai HMAC dalam sesi; throttle penghantaran ikut No. K/P
+ * Kod disimpan sebagai HMAC dalam sesi; throttle penghantaran ikut alamat e-mel
  * disimpan dalam fail temp pelayan (tiada perubahan schema DB).
  */
 
@@ -12,24 +12,24 @@ const OTP_MAX_ATTEMPTS = 5;
 const OTP_COOLDOWN     = 60;  // saat antara permintaan kod
 const OTP_MAX_PER_HOUR = 5;
 
-/** Laluan fail throttle untuk satu No. K/P */
-function otpThrottleFile(string $ic): ?string
+/** Laluan fail throttle untuk satu kunci (alamat e-mel) */
+function otpThrottleFile(string $key): ?string
 {
     $dir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'eaduan_otp';
     if (!is_dir($dir) && !@mkdir($dir, 0700, true)) {
         error_log('otp: gagal cipta direktori throttle ' . $dir);
         return null;
     }
-    return $dir . DIRECTORY_SEPARATOR . hash('sha256', strtoupper($ic)) . '.json';
+    return $dir . DIRECTORY_SEPARATOR . hash('sha256', strtolower($key)) . '.json';
 }
 
 /**
- * Semak had penghantaran untuk No. K/P. Pulang mesej ralat, atau null jika dibenarkan.
+ * Semak had penghantaran untuk satu kunci. Pulang mesej ralat, atau null jika dibenarkan.
  * Jika dibenarkan, rekod penghantaran ini.
  */
-function otpThrottleHit(string $ic): ?string
+function otpThrottleHit(string $key): ?string
 {
-    $file = otpThrottleFile($ic);
+    $file = otpThrottleFile($key);
     if ($file === null) {
         return null; // fail-open: OTP masih wajib, cuma throttle tidak aktif
     }
@@ -65,11 +65,12 @@ function otpMaskEmail(string $email): string
 
 /**
  * Jana kod baru, simpan dalam $_SESSION['otp_pending'] dan hantar e-mel.
- * $pending: ic, name, tel, email, is_new. Pulang mesej ralat, atau null jika berjaya.
+ * $pending mesti ada 'email' (+ data lain yang perlu dibawa selepas pengesahan).
+ * Pulang mesej ralat, atau null jika berjaya.
  */
 function otpIssue(array $pending): ?string
 {
-    if ($err = otpThrottleHit($pending['ic'])) {
+    if ($err = otpThrottleHit($pending['email'])) {
         return $err;
     }
 
