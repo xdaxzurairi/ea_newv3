@@ -11,9 +11,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
-$wr_id = req('id', '');
-if (!$wr_id) {
-    echo '<script>alert("ID aduan tidak sah.");window.close();</script>';
+$wr_id = (int) req('id', '0');
+
+// Hanya pemilik aduan boleh beri maklumbalas
+$wr = fetchOwnWr($wr_id, 'wr_id, status, work_performance');
+if (!$wr) {
+    echo '<script>alert("Aduan tidak dijumpai.");window.close();</script>';
     exit;
 }
 
@@ -23,30 +26,41 @@ $error = '';
 
 // ---- Process POST ----
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && post('hantar') === '1') {
+    validateCsrf();
+
     $work_performance   = post('work_performance', '');
     $satisfaction_notes = post('satisfaction_notes', '');
 
-    if (!in_array($work_performance, ['1', '2'])) {
+    if (!in_array($work_performance, ['1', '2'], true)) {
         $error = 'Sila pilih tahap kepuasan.';
     } else {
         try {
-            dbExecute(
-                "UPDATE wr SET satisfaction_notes=?, work_performance=?, satisfaction_date=GETDATE() WHERE wr_id=?",
-                [$satisfaction_notes, $work_performance, $wr_id]
+            [$ownerCol, $ownerVal] = currentOwner();
+            // Atomic: hanya aduan SIAP (COM / status kosong, sama logik semak.php) yang belum dinilai.
+            // Elak maklumbalas ditimpa & e-mel Pengarah dihantar berulang.
+            $affected = dbExecute(
+                "UPDATE wr SET satisfaction_notes=?, work_performance=?, satisfaction_date=GETDATE()
+                 WHERE wr_id=? AND {$ownerCol}=?
+                   AND UPPER(LTRIM(RTRIM(ISNULL(status,'')))) IN ('COM','')
+                   AND (work_performance IS NULL OR LTRIM(RTRIM(work_performance)) = '')",
+                [$satisfaction_notes, $work_performance, $wr_id, $ownerVal]
             );
-            $saved = true;
-
-            if ($work_performance === '2') {
-                require_once __DIR__ . '/../lib/email_pengarah.php';
-                email_pengarah($wr_id, $pdo);
+            if ($affected > 0) {
+                $saved = true;
+                if ($work_performance === '2') {
+                    require_once __DIR__ . '/../lib/email_pengarah.php';
+                    email_pengarah($wr_id, $pdo);
+                }
+            } else {
+                $error = 'Maklumbalas tidak dapat disimpan: aduan belum siap atau telah dinilai.';
             }
         } catch (Exception $ex) {
-            $error = 'Ralat menyimpan maklumbalas: ' . $ex->getMessage();
+            error_log('maklumbalas gagal wr_id=' . $wr_id . ': ' . $ex->getMessage());
+            $error = 'Ralat menyimpan maklumbalas. Sila cuba sebentar lagi.';
         }
     }
+    $wr = fetchOwnWr($wr_id, 'wr_id, status, work_performance');
 }
-
-$wr = dbFetchOne("SELECT wr_id, status, work_performance FROM wr WHERE wr_id = ?", [$wr_id]);
 ?>
 <!DOCTYPE html>
 <html lang="ms">
@@ -114,6 +128,7 @@ $wr = dbFetchOne("SELECT wr_id, status, work_performance FROM wr WHERE wr_id = ?
         <form method="post" action="">
             <input type="hidden" name="id" value="<?php echo e((string)$wr_id); ?>">
             <input type="hidden" name="hantar" value="1">
+            <input type="hidden" name="csrf_token" value="<?php echo e(csrfToken()); ?>">
 
             <div class="mb-3">
                 <label class="form-label fw-bold" style="color:var(--uitm-purple-dark);">Tahap Kepuasan <span class="text-danger">*</span></label>

@@ -21,7 +21,8 @@ if ($wr_id <= 0 || $idx < 1 || $idx > 3) {
 }
 
 $col = 'foto' . $idx;
-$row = dbFetchOne("SELECT {$col} AS filename FROM wr WHERE wr_id = ?", [$wr_id]);
+// Hanya pemilik aduan boleh lihat gambar
+$row = fetchOwnWr($wr_id, "{$col} AS filename");
 
 if (!$row || empty($row['filename'])) {
     http_response_code(404);

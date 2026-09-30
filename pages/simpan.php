@@ -16,10 +16,11 @@ validateCsrf();
 
 $pdo = getPdo();
 
-$requestor    = post('requestor', '1');
-$txt_emnumber = post('txt_emnumber', '');
-$no_stud      = post('no_stud', '');
-$no_kp        = post('no_kp', '');
+// Identiti pelapor WAJIB dari sesi — jangan percaya nilai POST (boleh dipalsukan)
+$requestor    = (string) sess('requestor', '');
+$txt_emnumber = (string) sess('txt_emnumber', '');
+$no_stud      = (string) sess('no_stud', '');
+$no_kp        = (string) sess('no_kp', '');
 $location     = post('location', '8');
 $infra        = post('infra', '1');
 $idnegeri     = post('idnegeri', '');

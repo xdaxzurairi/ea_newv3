@@ -163,6 +163,45 @@ function validateCsrf(): void
     }
 }
 
+/** Jana session ID baru selepas login (elak session fixation) */
+function regenerateLoginSession(): void
+{
+    session_regenerate_id(true);
+    unset($_SESSION['csrf_token']);
+}
+
+/**
+ * Identiti pengguna semasa dari sesi: [kolum wr, nilai].
+ * Pulang null jika sesi tiada identiti sah.
+ */
+function currentOwner(): ?array
+{
+    $requestor = (string) sess('requestor', '');
+    $map = [
+        '1' => ['em_number', (string) sess('txt_emnumber', '')],
+        '2' => ['stu_id',    (string) sess('no_stud', '')],
+        '3' => ['ic_no',     (string) sess('no_kp', '')],
+    ];
+    if (!isset($map[$requestor]) || trim($map[$requestor][1]) === '') {
+        return null;
+    }
+    return $map[$requestor];
+}
+
+/**
+ * Pastikan aduan wr_id milik pengguna semasa.
+ * Pulang baris wr (kolum $cols) jika milik, null jika tiada/bukan milik.
+ */
+function fetchOwnWr(int $wr_id, string $cols = 'wr_id'): ?array
+{
+    $owner = currentOwner();
+    if ($wr_id <= 0 || $owner === null) {
+        return null;
+    }
+    [$col, $val] = $owner;
+    return dbFetchOne("SELECT {$cols} FROM wr WHERE wr_id = ? AND {$col} = ?", [$wr_id, $val]);
+}
+
 /**
  * Label untuk Medium (kolum type_wr dalam jadual wr).
  * Ikut sistem eAduan lama sepenuhnya supaya paparan konsisten:

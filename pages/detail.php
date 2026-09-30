@@ -17,13 +17,12 @@ if (!$wr_id) {
     exit;
 }
 
-$wr = dbFetchOne(
-    "SELECT *,
-            FORMAT(date_requested, 'dd-MM-yyyy') AS date_requested_fmt,
-            FORMAT(time_requested, 'HH:mm:ss') AS time_requested_fmt,
-            FORMAT(date_stat_chg, 'dd-MM-yyyy HH:mm:ss') AS date_stat_chg_fmt
-     FROM wr WHERE wr_id = ?",
-    [$wr_id]
+// Hanya pemilik aduan boleh lihat (elak IDOR — data pelapor adalah PII)
+$wr = fetchOwnWr((int) $wr_id,
+    "*,
+     FORMAT(date_requested, 'dd-MM-yyyy') AS date_requested_fmt,
+     FORMAT(time_requested, 'HH:mm:ss') AS time_requested_fmt,
+     FORMAT(date_stat_chg, 'dd-MM-yyyy HH:mm:ss') AS date_stat_chg_fmt"
 );
 if (!$wr) {
     $pageTitle = 'Aduan Tidak Dijumpai';

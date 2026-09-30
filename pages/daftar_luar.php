@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Set session
+        regenerateLoginSession();
         $_SESSION['sso_authenticated'] = true;
         $_SESSION['requestor']    = '3';
         $_SESSION['txt_emnumber'] = '';

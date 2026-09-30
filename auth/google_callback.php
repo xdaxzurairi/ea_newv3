@@ -13,8 +13,10 @@ $redirectUri  = $cfg['google_redirect_uri'];
 
 // Jika tiada code, redirect ke Google consent screen
 if (empty($_GET['code'])) {
-    $type = $_GET['type'] ?? 'staf'; // 'staf' atau 'student'
+    $type = ($_GET['type'] ?? '') === 'student' ? 'student' : 'staf';
     $_SESSION['google_login_type'] = $type;
+    // OAuth state — elak login CSRF (penyerang paksa mangsa log masuk sebagai akaun penyerang)
+    $_SESSION['google_oauth_state'] = bin2hex(random_bytes(16));
 
     $params = http_build_query([
         'client_id'     => $clientId,
@@ -23,9 +25,17 @@ if (empty($_GET['code'])) {
         'scope'         => 'openid email profile',
         'access_type'   => 'offline',
         'prompt'        => 'select_account',
+        'state'         => $_SESSION['google_oauth_state'],
     ]);
     header('Location: https://accounts.google.com/o/oauth2/v2/auth?' . $params);
     exit;
+}
+
+$expectedState = (string) ($_SESSION['google_oauth_state'] ?? '');
+unset($_SESSION['google_oauth_state']);
+if ($expectedState === '' || !hash_equals($expectedState, (string) ($_GET['state'] ?? ''))) {
+    http_response_code(400);
+    die('Permintaan log masuk tidak sah atau telah tamat. <a href="' . baseUrl() . '/index.php">Cuba semula</a>.');
 }
 
 // Tukar code ke access token
@@ -100,6 +110,7 @@ if ($type === 'staf') {
     $_SESSION['user_name']    = $row['stu_name'] ?? $name;
 }
 
+regenerateLoginSession();
 $_SESSION['sso_authenticated'] = true;
 $_SESSION['user_email'] = $email;
 $_SESSION['user_type']  = $type;

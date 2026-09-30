@@ -9,11 +9,18 @@
  * Bila user klik satu baris, pilihBilik() isi form induk (neg, kamp, bang, blk, fl, ruang
  * dan label idneg, idkamp, idbang, idblk, idfl, idruang) lalu submit.
  */
+session_start();
 require_once __DIR__ . '/../includes/functions.php';
 
-$no_em     = trim($_GET['txt_emnumber'] ?? '');
-$no_stud   = trim($_GET['no_stud'] ?? '');
-$requestor = trim($_GET['requestor'] ?? '');
+if (empty($_SESSION['sso_authenticated'])) {
+    http_response_code(403);
+    exit('Sesi tamat. Sila log masuk semula.');
+}
+
+// Identiti dari sesi sahaja — parameter GET diabaikan (elak intip bilik orang lain)
+$no_em     = trim((string) sess('txt_emnumber', ''));
+$no_stud   = trim((string) sess('no_stud', ''));
+$requestor = trim((string) sess('requestor', ''));
 $location  = trim($_GET['location'] ?? '');
 
 $rooms = [];

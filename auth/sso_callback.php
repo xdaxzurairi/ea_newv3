@@ -29,8 +29,15 @@ if (empty($jwt)) {
     exit;
 }
 
+// Fail-closed: tanpa secret, token boleh dipalsukan dengan key kosong
+if (trim((string) $cfg['jwt_secret']) === '') {
+    error_log('sso_callback: JWT_SECRET tidak dikonfigurasi — SSO dinyahaktifkan');
+    http_response_code(503);
+    die('SSO tidak dikonfigurasi. Sila hubungi pentadbir sistem.');
+}
+
 // Decode JWT
-$payload = decodeJWT($jwt, $cfg['jwt_secret']);
+$payload = decodeJWT($jwt, $cfg['jwt_secret'], (string) $cfg['jwt_algorithm']);
 if ($payload === false) {
     session_destroy();
     session_start();
@@ -71,6 +78,7 @@ if ($userType === 'staf') {
     die('Jenis pengguna tidak disokong melalui SSO. Sila gunakan pendaftaran Pengguna Luar.');
 }
 
+regenerateLoginSession();
 $_SESSION['sso_authenticated'] = true;
 $_SESSION['user_id']    = $payload['iduitm'];
 $_SESSION['user_email'] = $payload['email'];
@@ -84,7 +92,7 @@ exit;
 
 // ---- JWT Functions ----
 
-function decodeJWT(string $jwt, string $secret)
+function decodeJWT(string $jwt, string $secret, string $expectedAlg)
 {
     $parts = explode('.', $jwt);
     if (count($parts) !== 3) return false;
@@ -94,7 +102,9 @@ function decodeJWT(string $jwt, string $secret)
     $payload = json_decode(base64UrlDec($payload64), true);
     if (!$header || !$payload) return false;
 
-    $alg = strtoupper($header['alg'] ?? 'HS512');
+    // Pin algoritma kepada config — jangan percaya 'alg' dari token
+    $alg = strtoupper($expectedAlg ?: 'HS512');
+    if (strtoupper((string) ($header['alg'] ?? '')) !== $alg) return false;
     $hash = match ($alg) {
         'HS256' => 'sha256',
         'HS384' => 'sha384',
