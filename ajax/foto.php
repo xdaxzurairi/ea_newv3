@@ -29,17 +29,32 @@ if (!$row || empty($row['filename'])) {
     exit;
 }
 
-$stored = $row['filename'];
+$stored = trim($row['filename']);
 
-// Key MinIO (baru) mengandungi '/' (contoh: ea_newv3/wr/123/foto1.jpg).
+// MIME ikut sambungan fail (jangan percaya Content-Type dari storan)
+$ext  = strtolower(pathinfo($stored, PATHINFO_EXTENSION));
+$mime = match($ext) {
+    'png'  => 'image/png',
+    'gif'  => 'image/gif',
+    'webp' => 'image/webp',
+    default => 'image/jpeg',
+};
+
+// Key MinIO (baru) mengandungi '/' (contoh: ea_newv3/123/foto1.jpg).
 // Nama fail lokal lama sentiasa flat (contoh: wr_123_1.jpg), tiada '/'.
+// MinIO di-proxy oleh pelayan: URL presigned tidak didedahkan kepada pelayar,
+// dan pengguna tidak perlu akses terus ke minio.uitm.edu.my:8443.
 if (strpos($stored, '/') !== false) {
-    $url = minioPresignedUrl($stored);
-    if ($url === null) {
+    $obj = minioGetObject($stored);
+    if ($obj === null) {
         http_response_code(503);
         exit;
     }
-    header('Location: ' . $url, true, 302);
+    header('Content-Type: ' . $mime);
+    header('Content-Length: ' . strlen($obj['body']));
+    header('Cache-Control: private, max-age=86400');
+    header('X-Content-Type-Options: nosniff');
+    echo $obj['body'];
     exit;
 }
 
@@ -50,14 +65,6 @@ if (!file_exists($path)) {
     http_response_code(404);
     exit;
 }
-
-$ext  = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-$mime = match($ext) {
-    'png'  => 'image/png',
-    'gif'  => 'image/gif',
-    'webp' => 'image/webp',
-    default => 'image/jpeg',
-};
 
 header('Content-Type: ' . $mime);
 header('Content-Length: ' . filesize($path));

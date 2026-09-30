@@ -80,6 +80,15 @@ if (file_put_contents($dest, $compressed) === false) {
 $sizeKB = round(strlen($compressed) / 1024);
 echo json_encode(['success' => true, 'filename' => $filename, 'size_kb' => $sizeKB]);
 
+// Bersihkan fail temp terbiar (borang tidak dihantar) lebih 24 jam — ~1 dalam 20 upload
+if (random_int(1, 20) === 1) {
+    foreach (glob(__DIR__ . '/../uploads/temp/tmp_*') ?: [] as $old) {
+        if (is_file($old) && filemtime($old) < time() - 86400) {
+            @unlink($old);
+        }
+    }
+}
+
 // ---- Helper: compress gambar supaya < 1MB ----
 function compressToUnder1MB(string $srcPath, string $mime): string|false
 {

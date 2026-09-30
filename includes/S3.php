@@ -94,13 +94,22 @@ class MinioClient
     }
 
     /**
-     * php.ini curl.cainfo pada sesetengah pelayan Windows dev menunjuk ke fail
-     * yang tak wujud (cth. C:\apache24\bin\curl-ca-bundle.crt), menyebabkan
-     * setiap permintaan HTTPS gagal (HTTP 0). Jika ini berlaku, cari bundle CA
-     * sah yang lain (biasa dibundle dengan Git for Windows) sebagai gantian.
+     * Pilih bundle CA untuk sahkan sijil MinIO (SSL verify kekal hidup).
+     * Keutamaan: MINIO_CA_BUNDLE (.env) → config/cacert.pem (bundle Mozilla dibawa app)
+     * → php.ini curl.cainfo → calon lain.
+     * Sebab: curl-ca-bundle.crt pada pelayan dev lapuk (tiada "SSL.com TLS RSA Root CA 2022"
+     * yang digunakan minio.uitm.edu.my) → setiap upload gagal HTTP 0 dan fallback ke lokal.
+     * Kemas kini config/cacert.pem dari https://curl.se/ca/cacert.pem bila perlu.
      */
     private function applyCaBundle($ch): void
     {
+        foreach ([getenv('MINIO_CA_BUNDLE') ?: '', __DIR__ . '/../config/cacert.pem'] as $bundle) {
+            if ($bundle !== '' && is_file($bundle)) {
+                curl_setopt($ch, CURLOPT_CAINFO, $bundle);
+                return;
+            }
+        }
+
         $configured = ini_get('curl.cainfo');
         if ($configured && is_file($configured)) {
             return; // ini sudah betul, tiada perlu override
@@ -145,6 +154,32 @@ class MinioClient
         $signature         = $this->sign($stringToSign, $date);
 
         return $this->endpoint . $uri . '?' . $canonicalQuery . '&X-Amz-Signature=' . $signature;
+    }
+
+    /**
+     * Ambil objek dari MinIO (server-side) guna presigned URL jangka pendek.
+     * Pulang ['body' => string, 'type' => string] atau null jika gagal.
+     */
+    public function getObject(string $key): ?array
+    {
+        $ch = curl_init($this->presignedGetUrl($key, 60));
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $this->applyCaBundle($ch);
+        $body   = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $type   = (string) curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        $err    = curl_error($ch);
+        curl_close($ch);
+
+        if ($body === false || $status !== 200) {
+            error_log("MinioClient::getObject gagal (HTTP {$status}) untuk key={$key}: {$err}");
+            return null;
+        }
+        return ['body' => $body, 'type' => $type];
     }
 
     private function objectUri(string $key): string

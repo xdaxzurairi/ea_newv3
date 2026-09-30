@@ -67,8 +67,15 @@ function minioUpload(string $localPath, string $key): ?string
     return $fullKey;
 }
 
+/** Ambil kandungan objek (server-side). Pulang ['body','type'] atau null. */
+function minioGetObject(string $key): ?array
+{
+    $client = getMinioClient();
+    return $client ? $client->getObject($key) : null;
+}
+
 /** Jana presigned GET URL untuk object key (key sudah termasuk prefix, seperti disimpan dalam DB). */
-function minioPresignedUrl(string $key, int $expirySeconds = 86400): ?string
+function minioPresignedUrl(string $key, int $expirySeconds = 300): ?string
 {
     $client = getMinioClient();
     if ($client === null) {

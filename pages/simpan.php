@@ -144,17 +144,29 @@ if ($requestor == '1') {
     $type_req = '3';
 }
 
+/**
+ * INSERT ke wr dan pulang wr_id baru.
+ * wr ada trigger, jadi lastInsertId/@@IDENTITY tidak boleh dipercayai dan
+ * OUTPUT tanpa INTO ditolak SQL Server — guna OUTPUT ... INTO @t.
+ */
+function insertWrReturningId(string $insertSql, array $params): ?int
+{
+    $sql = preg_replace('/\)\s*VALUES\s*\(/', ') OUTPUT INSERTED.wr_id INTO @t VALUES (', $insertSql, 1);
+    $st  = getPdo()->prepare("SET NOCOUNT ON; DECLARE @t TABLE (wr_id INT); {$sql}; SELECT wr_id FROM @t;");
+    $st->execute($params);
+    do {
+        $row = $st->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return (int) $row['wr_id'];
+        }
+    } while ($st->nextRowset());
+    return null;
+}
+
 // ---- Helper: simpan foto ke kolum wr (foto1/foto2/foto3) ----
 function simpanFotoDB(PDO $pdo, int $wr_id): void
 {
-    // Tambah kolum jika belum wujud
-    foreach (['foto1', 'foto2', 'foto3'] as $col) {
-        try {
-            $pdo->exec("IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id=OBJECT_ID('wr') AND name='{$col}')
-                ALTER TABLE wr ADD {$col} VARCHAR(500) NULL");
-        } catch (Exception $e) { /* abaikan jika dah wujud */ }
-    }
-
+    // Kolum foto1/foto2/foto3 (VARCHAR 500) sudah wujud dalam wr — tiada DDL semasa runtime
     $uploadDir = __DIR__ . '/../uploads/wr/';
     $updates   = [];
     $params    = [];
@@ -179,7 +191,10 @@ function simpanFotoDB(PDO $pdo, int $wr_id): void
             continue;
         }
 
-        $dest = 'wr_' . $wr_id . '_' . ($fi + 1) . '.' . $ext;
+        // Fallback lokal: akhiran rawak supaya URL terus /uploads/wr/... tidak boleh diteka
+        // (pelayan tidak menghalang akses terus ke folder uploads)
+        error_log("simpanFotoDB: MinIO gagal untuk wr_id={$wr_id} {$col}, simpan lokal");
+        $dest = 'wr_' . $wr_id . '_' . ($fi + 1) . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
         if (rename($src, $uploadDir . $dest)) {
             $updates[] = "{$col} = ?";
             $params[]  = $dest;
@@ -211,96 +226,74 @@ try {
         // Staf – bilik sendiri
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,em_number,phone,prob_group,type_wr,time_requested,type_req,status,zone_id,state_id,site_id,description,fl_id,rm_id,date_requested,location)
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,?,GETDATE(),?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $em_number, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id, $location
         ]);
-        $success = true;
+        $success = $wr_id !== null;
 
     } elseif ($requestor == '1' && $location == '9') {
         // Staf – lokasi lain
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,em_number,phone,prob_group,type_wr,time_requested,type_req,status,location,zone_id,state_id,site_id,description,date_requested,fl_id,rm_id,infra_id,subinfra_id,latitude,longitude,koordinat_lokasi)
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $em_number, $phone_val,
             $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
         ]);
-        $success = true;
+        $success = $wr_id !== null;
 
     } elseif ($requestor == '2' && $location == '8') {
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,stu_id,phone,prob_group,type_wr,time_requested,type_req,status,zone_id,state_id,site_id,description,fl_id,rm_id,date_requested,location)
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,?,GETDATE(),?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $stu_id_val, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id, $location
         ]);
-        $success = true;
+        $success = $wr_id !== null;
 
     } elseif ($requestor == '2' && $location == '9') {
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,stu_id,phone,prob_group,type_wr,time_requested,type_req,status,location,zone_id,state_id,site_id,description,date_requested,fl_id,rm_id,infra_id,subinfra_id,latitude,longitude,koordinat_lokasi)
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $stu_id_val, $phone_val,
             $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
         ]);
-        $success = true;
+        $success = $wr_id !== null;
 
     } elseif ($requestor == '3' && $location == '8') {
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,hp_requestor,ic_no,phone,prob_group,type_wr,time_requested,type_req,status,zone_id,state_id,site_id,description,fl_id,rm_id,date_requested,location)
                 VALUES (?,?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,?,GETDATE(),?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $hp_requestor, $ic_no_val, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id, $location
         ]);
-        $success = true;
+        $success = $wr_id !== null;
 
     } elseif ($requestor == '3' && $location == '9') {
         $sql = "INSERT INTO wr (bl_id,section,prob_type,requestor,hp_requestor,ic_no,phone,prob_group,type_wr,time_requested,type_req,status,location,zone_id,state_id,site_id,description,date_requested,fl_id,rm_id,infra_id,subinfra_id,latitude,longitude,koordinat_lokasi)
                 VALUES (?,?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
-        dbExecute($sql, [
+        $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $hp_requestor, $ic_no_val, $phone_val,
             $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
         ]);
-        $success = true;
+        $success = $wr_id !== null;
     }
 
     if ($success) {
-        // Dapatkan wr_id yang betul: query lepas INSERT, filter by requestor + masa
-        // (@@IDENTITY/lastInsertId tidak boleh pakai sebab ada trigger pada wr)
-        if ($requestor == '1' && $em_number) {
-            $r = dbFetchOne(
-                "SELECT TOP 1 wr_id FROM wr WHERE em_number = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
-                [$em_number]
-            );
-        } elseif ($requestor == '2' && $stu_id_val) {
-            $r = dbFetchOne(
-                "SELECT TOP 1 wr_id FROM wr WHERE stu_id = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
-                [$stu_id_val]
-            );
-        } elseif ($requestor == '3' && $ic_no_val) {
-            $r = dbFetchOne(
-                "SELECT TOP 1 wr_id FROM wr WHERE ic_no = ? AND status = 'R' AND time_requested >= DATEADD(second,-60,GETDATE()) ORDER BY wr_id DESC",
-                [$ic_no_val]
-            );
-        }
-        $wr_id = $r ? (int)$r['wr_id'] : null;
-
-        if ($wr_id) {
-            require_once __DIR__ . '/../lib/email_embom.php';
-            email_embom($wr_id, $pdo);
-        }
+        require_once __DIR__ . '/../lib/email_embom.php';
+        email_embom($wr_id, $pdo);
     }
 } catch (Exception $ex) {
     $success = false;
