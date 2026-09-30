@@ -1,17 +1,21 @@
 # Credentials & Environment
 .env
+.env.php
 
 # Upload temp files
 uploads/temp/*
 !uploads/temp/.gitkeep
+!uploads/temp/index.html
 
 # Work request uploads (fail pengguna — jangan commit)
 uploads/work_request/*
 !uploads/work_request/.gitkeep
+!uploads/work_request/index.html
 
 # Gambar aduan (fallback lokal bila MinIO gagal) — data pengguna, jangan commit
 uploads/wr/*
 !uploads/wr/.gitkeep
+!uploads/wr/index.html
 
 # OS files
 Thumbs.db

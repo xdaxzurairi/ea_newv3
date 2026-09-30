@@ -4,10 +4,21 @@ declare(strict_types=1);
 /**
  * Muat nilai dari fail .env ke $_ENV / getenv()
  * Dipanggil oleh config/database.php dan config/auth.php
+ *
+ * Utamakan .env.php: baris pertamanya `<?php exit; ?>` supaya jika diminta terus
+ * melalui web, PHP melaksanakannya dan tiada kandungan dipulangkan. Pelayan Apache
+ * ini mengabaikan .htaccess/web.config, jadi fail .env biasa boleh dimuat turun.
+ * .env kekal sebagai fallback untuk pelayan yang belum dimigrasi.
  */
 (function (): void {
-    $path = __DIR__ . '/../.env';
-    if (!file_exists($path)) {
+    $path = null;
+    foreach ([__DIR__ . '/../.env.php', __DIR__ . '/../.env'] as $candidate) {
+        if (file_exists($candidate)) {
+            $path = $candidate;
+            break;
+        }
+    }
+    if ($path === null) {
         return;
     }
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

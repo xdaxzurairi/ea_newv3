@@ -1,12 +1,14 @@
 /**
  * e-Aduan v3 – Service Worker
- * Cache-first for static assets, network-first for pages/API
+ * Cache-first for static assets; halaman HTML network-only (fallback offline.html).
+ * HTML TIDAK di-cache: halaman aduan mengandungi data peribadi pelapor dan
+ * cache kekal pada peranti kongsi selepas log keluar.
+ * Bump CACHE_VERSION → cache lama (termasuk HTML yang pernah di-cache) dipadam semasa activate.
  */
-const CACHE_VERSION = 'eaduan-v3-cache-v1';
+const CACHE_VERSION = 'eaduan-v3-cache-v2';
 const OFFLINE_URL = '/ea_newv3/offline.html';
 
 const PRECACHE_ASSETS = [
-    '/ea_newv3/',
     '/ea_newv3/offline.html',
     '/ea_newv3/assets/css/style.css',
     '/ea_newv3/assets/js/app.js',
@@ -93,15 +95,8 @@ async function cacheFirst(request) {
 
 async function networkFirstWithOffline(request) {
     try {
-        const response = await fetch(request);
-        if (response.ok) {
-            const cache = await caches.open(CACHE_VERSION);
-            cache.put(request, response.clone());
-        }
-        return response;
+        return await fetch(request);
     } catch {
-        const cached = await caches.match(request);
-        if (cached) return cached;
         return caches.match(OFFLINE_URL);
     }
 }
