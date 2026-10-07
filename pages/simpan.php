@@ -217,6 +217,10 @@ if ($koordinat_lokasi && strpos($koordinat_lokasi, ',') !== false) {
     $longitude = trim($longitude);
 }
 
+// Nilai untuk lajur wr.location: teks keterangan lokasi yang ditaip pengguna.
+// Kod $location (8/9) hanya untuk percabangan logik; jika keterangan kosong, guna kod sebagai sandaran.
+$lokasiSimpan = trim($loc_desc) !== '' ? mb_substr(trim($loc_desc), 0, 1000) : $location;
+
 // ---- INSERT ----
 $wr_id   = null;
 $success = false;
@@ -229,7 +233,7 @@ try {
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $em_number, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
-            $prob_description, $fl_id, $rm_id, $location
+            $prob_description, $fl_id, $rm_id, $lokasiSimpan
         ]);
         $success = $wr_id !== null;
 
@@ -239,7 +243,7 @@ try {
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $em_number, $phone_val,
-            $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
+            $prob_group, $medium, $type_req, $lokasiSimpan, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
@@ -252,7 +256,7 @@ try {
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $stu_id_val, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
-            $prob_description, $fl_id, $rm_id, $location
+            $prob_description, $fl_id, $rm_id, $lokasiSimpan
         ]);
         $success = $wr_id !== null;
 
@@ -261,7 +265,7 @@ try {
                 VALUES (?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $stu_id_val, $phone_val,
-            $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
+            $prob_group, $medium, $type_req, $lokasiSimpan, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
@@ -274,7 +278,7 @@ try {
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $hp_requestor, $ic_no_val, $phone_val,
             $prob_group, $medium, $type_req, $zone_id, $state_id, $site_id,
-            $prob_description, $fl_id, $rm_id, $location
+            $prob_description, $fl_id, $rm_id, $lokasiSimpan
         ]);
         $success = $wr_id !== null;
 
@@ -283,7 +287,7 @@ try {
                 VALUES (?,?,?,?,?,?,?,?,?,GETDATE(),?,'R',?,?,?,?,?,GETDATE(),?,?,?,?,?,?,?)";
         $wr_id = insertWrReturningId($sql, [
             $bl_id, $section, $prob_type, $requestor_name, $hp_requestor, $ic_no_val, $phone_val,
-            $prob_group, $medium, $type_req, $location, $zone_id, $state_id, $site_id,
+            $prob_group, $medium, $type_req, $lokasiSimpan, $zone_id, $state_id, $site_id,
             $prob_description, $fl_id, $rm_id,
             $idkat_infra ?: null, $id_subinfra ?: null,
             $latitude ?: null, $longitude ?: null, $koordinat_lokasi ?: null
