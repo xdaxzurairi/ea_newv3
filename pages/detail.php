@@ -165,7 +165,7 @@ $mediumLabels = getMediumLabels();
 
 $type_req_labels = getTypeReqLabels();
 $type_req_val   = trim($wr['type_req'] ?? '');
-$type_req_label = $type_req_labels[$type_req_val] ?? 'Staf UiTM';
+$type_req_label = $type_req_labels[$type_req_val] ?? '-';
 
 $pageTitle = 'Butiran Aduan #' . $wr_id;
 require_once __DIR__ . '/../includes/header.php';
