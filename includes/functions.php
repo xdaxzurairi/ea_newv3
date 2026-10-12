@@ -36,12 +36,12 @@ function buildContentSecurityPolicy(): string
         "default-src 'self'",
         // Inline script digunakan (contoh di borang.php) + CDN & Leaflet
         "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com",
-        // Bootstrap CSS, icons & Google Fonts
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
+        // Bootstrap CSS, icons, Google Fonts & Leaflet CSS (unpkg)
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com",
         // Font dari Google Fonts & CDN
         "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
-        // Imej + tile peta Google (mt0-3.google.com)
-        "img-src 'self' data: blob: https://*.google.com",
+        // Imej + tile peta Google (mt0-3.google.com) + ikon penanda Leaflet (unpkg)
+        "img-src 'self' data: blob: https://*.google.com https://unpkg.com",
         // AJAX / fetch hanya ke domain sendiri
         "connect-src 'self'",
         // Halaman ini hanya boleh di-frame oleh origin yang sama

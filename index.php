@@ -570,7 +570,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         <?php endif; ?>
 
         <!-- Login Options -->
-        <div class="login-label"><span>Log Masuk</span></div>
+        <div class="login-label"><span>Staf &amp; Student</span></div>
 
         <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
             <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
