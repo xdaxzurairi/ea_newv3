@@ -533,7 +533,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         <div class="brand-features">
             <div class="brand-feature"><i class="bi bi-shield-check"></i> Akses selamat melalui SSO &amp; Google</div>
             <div class="brand-feature"><i class="bi bi-lightning-charge"></i> Status aduan dikemas kini masa nyata</div>
-            <div class="brand-feature"><i class="bi bi-phone"></i> Boleh dipasang sebagai aplikasi mudah alih</div>
+            <div class="brand-feature"><i class="bi bi-phone"></i> Boleh dimuat turun sebagai aplikasi mudah alih</div>
         </div>
 
         <div class="brand-footer">

@@ -40,11 +40,11 @@
             '<div class="pwa-banner-content">' +
                 '<span class="pwa-banner-icon">📱</span>' +
                 '<div class="pwa-banner-text">' +
-                    '<strong>Pasang e-Aduan</strong>' +
+                    '<strong>Muat Turun e-Aduan</strong>' +
                     '<small>Akses pantas terus dari skrin utama</small>' +
                 '</div>' +
                 '<div class="pwa-banner-actions">' +
-                    '<button id="pwa-install-btn" class="pwa-btn-install">Pasang</button>' +
+                    '<button id="pwa-install-btn" class="pwa-btn-install">Muat Turun</button>' +
                     '<button id="pwa-dismiss-btn" class="pwa-btn-dismiss">&times;</button>' +
                 '</div>' +
             '</div>';

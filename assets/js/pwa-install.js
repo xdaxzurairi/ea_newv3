@@ -72,7 +72,7 @@
         overlay.className = 'pwa-ios-overlay';
         overlay.innerHTML =
             '<div class="pwa-ios-modal">' +
-                '<h3><i class="bi bi-phone"></i> Pasang e-Aduan</h3>' +
+                '<h3><i class="bi bi-phone"></i> Muat Turun e-Aduan</h3>' +
                 '<div class="pwa-ios-step">' +
                     '<span class="pwa-ios-step-num">1</span>' +
                     '<span>Ketik ikon <strong>Share</strong> <i class="bi bi-box-arrow-up"></i> di bar bawah Safari</span>' +
@@ -111,7 +111,7 @@
         overlay.className = 'pwa-ios-overlay';
         overlay.innerHTML =
             '<div class="pwa-ios-modal">' +
-                '<h3><i class="bi bi-phone"></i> Pasang e-Aduan</h3>' +
+                '<h3><i class="bi bi-phone"></i> Muat Turun e-Aduan</h3>' +
                 '<div class="pwa-ios-step">' +
                     '<span class="pwa-ios-step-num">1</span>' +
                     '<span>Ketik ikon <strong>Menu</strong> <i class="bi bi-three-dots-vertical"></i> di penjuru kanan atas Chrome</span>' +
@@ -175,7 +175,7 @@
         overlay.className = 'pwa-ios-overlay';
         overlay.innerHTML =
             '<div class="pwa-ios-modal">' +
-                '<h3><i class="bi bi-laptop"></i> Pasang e-Aduan</h3>' +
+                '<h3><i class="bi bi-laptop"></i> Muat Turun e-Aduan</h3>' +
                 steps +
                 '<button class="pwa-ios-close" id="pwa-ios-close">Faham</button>' +
             '</div>';
@@ -193,7 +193,7 @@
     function showInstalled() {
         section.innerHTML =
             '<div class="pwa-installed-badge">' +
-                '<i class="bi bi-check-circle-fill"></i> e-Aduan telah dipasang' +
+                '<i class="bi bi-check-circle-fill"></i> e-Aduan telah dimuat turun' +
             '</div>';
     }
 
