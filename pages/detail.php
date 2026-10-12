@@ -152,6 +152,11 @@ if ($em_number) {
             'Telefon'  => trim($row['tel_no']),
             'E-mel'    => trim($row['email']),
         ];
+        // No. telefon yang diisi pengguna luar semasa membuat aduan (wr.hp_requestor)
+        $hp_aduan = trim($wr['hp_requestor'] ?? '');
+        if ($hp_aduan !== '') {
+            $pelapor['H/P Aduan'] = $hp_aduan;
+        }
     }
 }
 

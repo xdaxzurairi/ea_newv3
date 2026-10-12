@@ -82,6 +82,16 @@ $pdo = getPdo();
 $type = $_SESSION['google_login_type'] ?? 'staf';
 unset($_SESSION['google_login_type']);
 
+// Satu butang Google sahaja (type=staf); jenis sebenar ditentukan oleh domain e-mel
+$emailLower = strtolower(trim($email));
+$stuIdDariEmel = '';
+if (preg_match('/^(\d{6,15})@student\.uitm\.edu\.my$/', $emailLower, $m)) {
+    $type = 'student';
+    $stuIdDariEmel = $m[1];
+} elseif (str_ends_with($emailLower, '@student.uitm.edu.my')) {
+    $type = 'student';
+}
+
 if ($type === 'staf') {
     $row = dbFetchOne("SELECT em_number, em_id FROM em WHERE email = ?", [$email]);
     if (!$row) {
@@ -97,6 +107,10 @@ if ($type === 'staf') {
     $_SESSION['user_name']    = $row['em_id'] ?? $name;
 } else {
     $row = dbFetchOne("SELECT stu_id, stu_name FROM stu WHERE email = ?", [$email]);
+    // Banyak rekod stu tiada e-mel; e-mel pelajar UiTM = <stu_id>@student.uitm.edu.my
+    if (!$row && $stuIdDariEmel !== '') {
+        $row = dbFetchOne("SELECT stu_id, stu_name FROM stu WHERE stu_id = ?", [$stuIdDariEmel]);
+    }
     if (!$row) {
         echo '<p>Email <strong>' . e($email) . '</strong> tidak dijumpai dalam jadual pelajar (stu).</p>';
         echo '<p><a href="' . baseUrl() . '/index.php">Kembali</a></p>';
