@@ -24,7 +24,7 @@
         e.preventDefault();
         deferredPrompt = e;
         btn.onclick = triggerNativeInstall;
-        if (hint) hint.textContent = 'Tekan butang untuk pasang terus ke peranti anda';
+        if (hint) hint.textContent = 'Tekan butang untuk muat turun terus ke peranti anda';
     });
 
     window.addEventListener('appinstalled', function () {
@@ -44,22 +44,22 @@
 
     function configureForPlatform() {
         if (platform === 'ios') {
-            btn.innerHTML = '<i class="bi bi-phone"></i> Pasang e-Aduan di iPhone/iPad';
+            btn.innerHTML = '<i class="bi bi-phone"></i> Muat Turun e-Aduan di iPhone/iPad';
             btn.onclick = showIosInstructions;
             if (hint) {
                 hint.innerHTML = 'Ketik <i class="bi bi-box-arrow-up"></i> <strong>Share</strong> kemudian <strong>"Add to Home Screen"</strong>';
             }
         } else if (platform === 'android') {
-            btn.innerHTML = '<i class="bi bi-phone"></i> Pasang e-Aduan';
+            btn.innerHTML = '<i class="bi bi-phone"></i> Muat Turun e-Aduan';
             btn.onclick = showAndroidInstructions;
             if (hint) {
-                hint.textContent = 'Pasang aplikasi terus ke telefon anda';
+                hint.textContent = 'Muat turun aplikasi terus ke telefon anda';
             }
         } else {
-            btn.innerHTML = '<i class="bi bi-download"></i> Pasang e-Aduan';
+            btn.innerHTML = '<i class="bi bi-download"></i> Muat Turun e-Aduan';
             btn.onclick = showDesktopInstructions;
             if (hint) {
-                hint.textContent = 'Pasang sebagai aplikasi di desktop anda';
+                hint.textContent = 'Muat turun sebagai aplikasi di desktop anda';
             }
         }
     }

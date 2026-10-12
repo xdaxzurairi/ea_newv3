@@ -570,7 +570,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         <?php endif; ?>
 
         <!-- Login Options -->
-        <div class="login-label"><span>Staf &amp; Student</span></div>
+        <div class="login-label"><span>Staf &amp; Pelajar</span></div>
 
         <a href="<?php echo $googleUrlStaf; ?>" class="login-btn btn-google">
             <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -591,9 +591,9 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 
         <!-- PWA Install Section -->
         <div id="pwa-install-section" class="pwa-install-section">
-            <div class="pwa-install-divider"><span>Pasang Aplikasi</span></div>
+            <div class="pwa-install-divider"><span>Muat Turun Aplikasi</span></div>
             <button id="pwa-install-main-btn" class="login-btn btn-pwa-install" type="button">
-                <i class="bi bi-download"></i> Pasang e-Aduan
+                <i class="bi bi-download"></i> Muat Turun e-Aduan
             </button>
             <p class="pwa-install-hint" id="pwa-install-hint"></p>
         </div>

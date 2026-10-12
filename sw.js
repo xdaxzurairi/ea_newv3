@@ -5,7 +5,7 @@
  * cache kekal pada peranti kongsi selepas log keluar.
  * Bump CACHE_VERSION → cache lama (termasuk HTML yang pernah di-cache) dipadam semasa activate.
  */
-const CACHE_VERSION = 'eaduan-v3-cache-v2';
+const CACHE_VERSION = 'eaduan-v3-cache-v3';
 const OFFLINE_URL = '/ea_newv3/offline.html';
 
 const PRECACHE_ASSETS = [
