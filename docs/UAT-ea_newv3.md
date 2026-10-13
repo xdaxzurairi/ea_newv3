@@ -1,6 +1,9 @@
 # e-Aduan v3 – Dokumen UAT Dwibahasa / Bilingual UAT Document
 
-> **Versi hidup/boleh isi (BM/EN):** salinan interaktif (penjejakan status, log kecacatan, cetak PDF) ada di:
+> **Salinan rasmi untuk cetak (PDF, hitam & putih, checkbox):** `docs/UAT-ea_newv3.pdf`
+> *Official print copy (PDF, black & white, checkbox answer fields): `docs/UAT-ea_newv3.pdf`*
+>
+> **Versi hidup/boleh isi (BM/EN, hitam & putih):** salinan interaktif (penjejakan status, log kecacatan, cetak PDF) ada di:
 > https://claude.ai/artifact/2BJNi13Y7GvGmXJbMnw74V
 >
 > Fail ini (`docs/UAT-ea_newv3.md`) ialah rujukan senarai kes ujian dwibahasa yang disimpan bersama kod untuk rekod/version control.
