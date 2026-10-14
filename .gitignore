@@ -1,6 +1,17 @@
 # Credentials & Environment
 .env
+.env.*
+!.env.example
 .env.php
+*.key
+*.p12
+*.pfx
+*.bak
+*.sql
+config/*.local.php
+
+# Tetapan Claude tempatan (boleh mengandungi arahan/laluan sensitif)
+.claude/settings.local.json
 
 # Upload temp files
 uploads/temp/*
