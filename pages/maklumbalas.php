@@ -3,7 +3,7 @@
  * eAduan v3 – Maklumbalas Pelanggan
  * Popup – pengguna memberi maklumbalas selepas aduan siap (COM).
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 if (empty($_SESSION['sso_authenticated'])) {

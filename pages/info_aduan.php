@@ -3,7 +3,7 @@
  * eAduan v3 – Pengesahan Aduan
  * Terima POST dari borang.php, papar semua data untuk pengesahan sebelum simpan.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 if (empty($_SESSION['sso_authenticated'])) {

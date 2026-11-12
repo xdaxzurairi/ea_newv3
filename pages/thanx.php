@@ -3,7 +3,7 @@
  * eAduan v3 – Terima Kasih
  * Halaman selepas aduan berjaya dihantar.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $pageTitle = 'Terima Kasih';

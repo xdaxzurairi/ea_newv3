@@ -3,7 +3,7 @@
  * eAduan v3 – Serve Foto Kerosakan (lokal legacy atau MinIO)
  * ?wr_id=X&idx=Y  (idx: 1, 2, atau 3)
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/minio.php';
 

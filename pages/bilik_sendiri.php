@@ -9,7 +9,7 @@
  * Bila user klik satu baris, pilihBilik() isi form induk (neg, kamp, bang, blk, fl, ruang
  * dan label idneg, idkamp, idbang, idblk, idfl, idruang) lalu submit.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 if (empty($_SESSION['sso_authenticated'])) {

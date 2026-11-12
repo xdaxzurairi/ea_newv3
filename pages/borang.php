@@ -3,7 +3,7 @@
  * Borang Aduan Utama – eAduan v3
  * Semua SQL kekal sama seperti sistem lama.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 if (empty($_SESSION['sso_authenticated'])) {

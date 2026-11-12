@@ -3,7 +3,7 @@
  * Portal Warga SSO Callback (JWT)
  * Rujukan: eAduan/portal_warga_sso.php
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $cfg = getAuthConfig();
