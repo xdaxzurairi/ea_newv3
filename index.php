@@ -59,7 +59,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         <a class="site-brand" href="<?php echo baseUrl(); ?>/" aria-label="e-Aduan v3, Universiti Teknologi MARA">
             <span class="uitm-crest"><img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" width="204" height="88"></span>
             <span class="site-university">UNIVERSITI<br>TEKNOLOGI<br>MARA</span>
-            <span class="site-brand-name">e-Aduan v3</span>
+            <span class="site-brand-name">e-Aduan Fasiliti v3</span>
         </a>
         <details class="login-help">
             <summary>Bantuan</summary>
@@ -81,7 +81,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     <section class="login-card" aria-labelledby="login-heading">
         <div class="card-brand">
             <span class="uitm-crest"><img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" width="204" height="88"></span>
-            <div class="card-brand-title">e-Aduan v3</div>
+            <div class="card-brand-title">e-Aduan Fasiliti v3</div>
             <p>Universiti Teknologi MARA</p>
         </div>
 
