@@ -11,6 +11,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    header('Location: ' . baseUrl() . '/index.php?expired=1');
+    exit;
+}
+
 $requestor    = sess('requestor', '1');
 $txt_emnumber = sess('txt_emnumber', '');
 $no_stud      = sess('no_stud', '');

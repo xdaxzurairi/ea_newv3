@@ -11,6 +11,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    echo '<script>alert("Sesi tamat. Sila log masuk semula.");window.close();</script>';
+    exit;
+}
+
 $wr_id = (int) req('id', '0');
 
 // Hanya pemilik aduan boleh beri maklumbalas

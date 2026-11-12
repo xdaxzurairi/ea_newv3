@@ -10,6 +10,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    http_response_code(403);
+    exit;
+}
+
 $fn = trim($_GET['f'] ?? '');
 if (!preg_match('/^tmp_[a-zA-Z0-9]+_\d+_\d+\.jpg$/', $fn)) {
     http_response_code(404);

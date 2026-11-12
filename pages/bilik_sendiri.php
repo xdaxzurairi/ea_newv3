@@ -17,6 +17,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit('Sesi tamat. Sila log masuk semula.');
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    http_response_code(403);
+    exit('Sesi tamat. Sila log masuk semula.');
+}
+
 // Identiti dari sesi sahaja — parameter GET diabaikan (elak intip bilik orang lain)
 $no_em     = trim((string) sess('txt_emnumber', ''));
 $no_stud   = trim((string) sess('no_stud', ''));
