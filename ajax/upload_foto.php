@@ -3,7 +3,7 @@
  * eAduan v3 – Upload Foto Kerosakan (AJAX)
  * Terima gambar, compress < 1MB, simpan sementara dalam uploads/temp/
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 header('Content-Type: application/json');

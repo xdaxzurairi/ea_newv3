@@ -9,7 +9,7 @@
  *     rekod afm_user_osd hanya di-INSERT selepas e-mel disahkan.
  * No. K/P kekal sebagai kunci pengguna luar dalam wr/afm_user_osd.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/otp.php';
 

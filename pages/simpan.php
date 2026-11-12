@@ -3,7 +3,7 @@
  * eAduan v3 – Simpan Aduan
  * Terima POST dari info_aduan.php, masukkan ke jadual wr, hantar e-mel BOM.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/minio.php';
 

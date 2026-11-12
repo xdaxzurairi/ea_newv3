@@ -3,7 +3,7 @@
  * Google OAuth 2.0 Callback
  * Map email Google ke em_number (staf) atau stu_id (pelajar) dalam DB.
  */
-session_start();
+require_once __DIR__ . '/../includes/session_init.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $cfg = getAuthConfig();
