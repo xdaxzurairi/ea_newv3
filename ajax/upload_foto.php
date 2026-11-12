@@ -13,6 +13,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    echo json_encode(['success' => false, 'error' => 'Sesi tamat. Sila log masuk semula.']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['foto'])) {
     echo json_encode(['success' => false, 'error' => 'Tiada fail diterima.']);
     exit;

@@ -12,6 +12,12 @@ if (empty($_SESSION['sso_authenticated'])) {
     exit;
 }
 
+if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
+    session_destroy();
+    http_response_code(403);
+    exit;
+}
+
 $wr_id = (int)req('wr_id', '0');
 $idx   = (int)req('idx', '0');
 

@@ -1,12 +1,18 @@
 <?php
 /**
- * Google OAuth 2.0 Callback (Dev/Test)
+ * Google OAuth 2.0 Callback
  * Map email Google ke em_number (staf) atau stu_id (pelajar) dalam DB.
  */
 session_start();
 require_once __DIR__ . '/../includes/functions.php';
 
 $cfg = getAuthConfig();
+
+if ($cfg['auth_mode'] !== 'google') {
+    http_response_code(403);
+    die('Log masuk Google tidak diaktifkan.');
+}
+
 $clientId     = $cfg['google_client_id'];
 $clientSecret = $cfg['google_client_secret'];
 $redirectUri  = $cfg['google_redirect_uri'];

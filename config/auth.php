@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/env.php';
 
 return [
-    // 'portal_warga' untuk production, 'google' untuk dev/test
+    // 'google' untuk production (Google OAuth), 'portal_warga' jika Portal Warga SSO diaktifkan semula
     'auth_mode'            => getenv('AUTH_MODE')            ?: 'portal_warga',
 
     // Portal Warga SSO (JWT)
