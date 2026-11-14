@@ -164,7 +164,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     ].join(';');
     console.log('%c e-Aduan v3 %c', style, 'background:transparent');
     console.log('%c Developer  : Mohammad Zurairi', styleGold);
-    console.log('%c System     : ea_newv3 | XDIBAX Innovation', styleGold);
+    console.log('%c System     : eAduanV2 | XDIBAX Innovation', styleGold);
     console.log('%c Build      : ' + new Date().getFullYear() + ' @ UiTM', styleGold);
 })();
 </script>

@@ -8,7 +8,7 @@
 
     window.addEventListener('load', () => {
         navigator.serviceWorker
-            .register('/ea_newv3/sw.js', { scope: '/ea_newv3/' })
+            .register('/eAduanV2/sw.js', { scope: '/eAduanV2/' })
             .then((reg) => {
                 reg.addEventListener('updatefound', () => {
                     const newWorker = reg.installing;

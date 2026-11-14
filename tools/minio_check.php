@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Semakan MinIO selepas deploy (dev/prod). CLI sahaja:
  *   php tools/minio_check.php
- * Upload objek kecil ke ea_newv3/_healthcheck.txt, ambil semula, banding kandungan.
+ * Upload objek kecil ke eAduanV2/_healthcheck.txt, ambil semula, banding kandungan.
  */
 
 if (PHP_SAPI !== 'cli') {

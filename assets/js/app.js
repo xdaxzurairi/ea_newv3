@@ -7,7 +7,7 @@
 
     const BASE = document.querySelector('meta[name="base-url"]')?.content
               || window.EA_BASE
-              || '/ea_newv3';
+              || '/eAduanV2';
 
     /**
      * Generic cascade loader:
