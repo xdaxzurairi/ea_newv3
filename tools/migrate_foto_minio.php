@@ -56,7 +56,7 @@ foreach ($rows as $r) {
         $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION)) ?: 'jpg';
 
         if ($dryRun) {
-            echo "[dry-run] wr {$wr_id} foto{$i}: {$file} → ea_newv3/{$wr_id}/foto{$i}.{$ext}\n";
+            echo "[dry-run] wr {$wr_id} foto{$i}: {$file} → eAduanV2/{$wr_id}/foto{$i}.{$ext}\n";
             $ok++;
             continue;
         }

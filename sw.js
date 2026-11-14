@@ -5,17 +5,17 @@
  * cache kekal pada peranti kongsi selepas log keluar.
  * Bump CACHE_VERSION → cache lama (termasuk HTML yang pernah di-cache) dipadam semasa activate.
  */
-const CACHE_VERSION = 'eaduan-v3-cache-v4';
-const OFFLINE_URL = '/ea_newv3/offline.html';
+const CACHE_VERSION = 'eaduan-v3-cache-v5';
+const OFFLINE_URL = '/eAduanV2/offline.html';
 
 const PRECACHE_ASSETS = [
-    '/ea_newv3/offline.html',
-    '/ea_newv3/assets/css/style.css',
-    '/ea_newv3/assets/js/app.js',
-    '/ea_newv3/assets/js/pwa-register.js',
-    '/ea_newv3/assets/js/pwa-install.js',
-    '/ea_newv3/assets/icons/icon-192x192.png',
-    '/ea_newv3/assets/icons/icon-512x512.png'
+    '/eAduanV2/offline.html',
+    '/eAduanV2/assets/css/style.css',
+    '/eAduanV2/assets/js/app.js',
+    '/eAduanV2/assets/js/pwa-register.js',
+    '/eAduanV2/assets/js/pwa-install.js',
+    '/eAduanV2/assets/icons/icon-192x192.png',
+    '/eAduanV2/assets/icons/icon-512x512.png'
 ];
 
 const CACHE_CDN = [
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
 
     if (request.method !== 'GET') return;
 
-    if (url.pathname.startsWith('/ea_newv3/ajax/')) return;
+    if (url.pathname.startsWith('/eAduanV2/ajax/')) return;
 
     if (isStaticAsset(url)) {
         event.respondWith(cacheFirst(request));

@@ -67,7 +67,7 @@ function email_pengarah($noaduan, $pdo)
     }
 
     $cfg = getAuthConfig();
-    $base = rtrim($cfg['base_url'] ?? 'https://fmsdev.uitm.edu.my/ea_newv3', '/');
+    $base = rtrim($cfg['base_url'] ?? 'https://fmsdev.uitm.edu.my/eAduanV2', '/');
 
     $subject = "e-Aduan Fasiliti: Maklumbalas Tidak Memuaskan – Aduan #{$noaduan}";
 

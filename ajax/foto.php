@@ -46,7 +46,7 @@ $mime = match($ext) {
     default => 'image/jpeg',
 };
 
-// Key MinIO (baru) mengandungi '/' (contoh: ea_newv3/123/foto1.jpg).
+// Key MinIO (baru) mengandungi '/' (contoh: eAduanV2/123/foto1.jpg).
 // Nama fail lokal lama sentiasa flat (contoh: wr_123_1.jpg), tiada '/'.
 // MinIO di-proxy oleh pelayan: URL presigned tidak didedahkan kepada pelayar,
 // dan pengguna tidak perlu akses terus ke minio.uitm.edu.my:8443.

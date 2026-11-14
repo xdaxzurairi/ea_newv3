@@ -5,7 +5,7 @@ require_once __DIR__ . '/S3.php';
 require_once __DIR__ . '/../config/env.php';
 
 /** Namespace prefix supaya key kita tidak berlanggar dengan modul FMS lain yang kongsi bucket sama. */
-const MINIO_KEY_PREFIX = 'ea_newv3/';
+const MINIO_KEY_PREFIX = 'eAduanV2/';
 
 function getMinioClient(): ?MinioClient
 {
