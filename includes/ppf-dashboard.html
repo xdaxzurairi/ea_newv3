@@ -22,13 +22,11 @@
     <div class="ppf-alert" id="ppf-error" role="alert" hidden><h2 id="ppf-error-title">Paparan tidak tersedia</h2><p id="ppf-error-message"></p><button type="button" id="ppf-retry">Cuba semula</button></div>
     <section class="ppf-panel" id="ppf-terima-aduan" data-ppf-panel hidden aria-labelledby="ppf-entry-title">
       <div class="ppf-section-heading"><div><h2 id="ppf-entry-title">Terima Aduan &amp; Inisiatif Jabatan</h2><p class="ppf-muted">Rekodkan aduan yang diterima oleh pihak PPF.</p></div></div>
-      <p class="ppf-connection-note">Borang ini belum disambungkan kepada penghantaran aduan. Maklumat boleh disemak, tetapi belum boleh dihantar atau disimpan.</p>
+      <p class="ppf-connection-note">Masukkan No. Pekerja, pilih medium aduan, kemudian teruskan ke borang aduan penuh.</p>
       <form id="ppf-entry-form" class="ppf-entry-form">
         <div class="ppf-entry-grid">
-          <label>Pengadu merupakan<select name="requestor" required><option value="1">Staf UiTM</option><option value="2">Pelajar</option><option value="3">Pengguna Luar</option><option value="5">Inisiatif Jabatan</option></select></label>
-          <label>Nama pengadu<input name="requestor_name" maxlength="150" autocomplete="off" required></label>
-          <label>ID staf / pelajar / No. pengenalan<input name="requestor_id" maxlength="40" autocomplete="off" required></label>
-          <label>Medium Aduan<select name="medium_group" id="ppf-medium-group" required><option value="">Sila pilih</option><option value="lisan">Lisan</option><option value="bertulis">Bertulis</option><option value="inisiatif">Inisiatif Jabatan</option></select></label>
+          <label>No. Pekerja<input name="txt_emnumber" inputmode="numeric" pattern="[0-9]+" maxlength="40" autocomplete="off" required></label>
+          <label>Medium Aduan<select name="medium_group" id="ppf-medium-group" required><option value="">Sila pilih</option><option value="lisan">Lisan</option><option value="bertulis">Bertulis</option></select></label>
         </div>
         <fieldset class="ppf-medium-options" id="ppf-medium-options" hidden><legend>Melalui</legend>
           <label data-medium-group="lisan"><input type="radio" name="medium" value="3" required> Telefon</label>
@@ -37,16 +35,10 @@
           <label data-medium-group="bertulis"><input type="radio" name="medium" value="6"> Memo</label>
           <label data-medium-group="bertulis"><input type="radio" name="medium" value="7"> E-mel</label>
           <label data-medium-group="bertulis"><input type="radio" name="medium" value="8"> Minit Mesyuarat</label>
-          <label data-medium-group="inisiatif"><input type="radio" name="medium" value="4"> Inisiatif PPF</label>
         </fieldset>
-        <div class="ppf-entry-grid">
-          <label>No. telefon<input name="phone" type="tel" maxlength="30" autocomplete="off" required></label>
-          <label>Lokasi kerosakan<input name="location_label" maxlength="250" placeholder="Kampus, bangunan dan ruang" required></label>
-          <label class="ppf-entry-wide">Keterangan kerosakan<textarea name="description" rows="4" maxlength="4000" required></textarea></label>
-        </div>
-        <div class="ppf-form-actions"><button type="submit" class="ppf-primary">Semak maklumat</button><button type="reset">Kosongkan borang</button></div>
+        <div class="ppf-form-actions"><button type="submit" class="ppf-primary">Teruskan ke borang aduan</button><button type="reset">Kosongkan borang</button></div>
       </form>
-      <section id="ppf-entry-review" class="ppf-review" hidden aria-labelledby="ppf-review-title"><h3 id="ppf-review-title" tabindex="-1">Semakan maklumat</h3><dl id="ppf-review-fields"></dl><p>Penghantaran belum tersedia. Tiada rekod aduan telah disimpan.</p><button type="button" id="ppf-entry-edit">Kembali ke borang</button></section>
+      <p id="ppf-entry-status" role="status" class="ppf-status"></p>
     </section>
     <section class="ppf-panel" id="ppf-maklum-balas" data-ppf-panel hidden aria-labelledby="ppf-feedback-title"><h2 id="ppf-feedback-title">Semak Maklum Balas</h2><p class="ppf-muted">Semakan maklum balas pengguna bagi aduan fasiliti.</p><div class="ppf-empty"><h3>Sambungan data belum tersedia</h3><p>Senarai maklum balas akan dipaparkan selepas endpoint backend disambungkan.</p><a href="?view=completed" data-view="completed">Semak aduan siap</a></div></section>
     <section class="ppf-panel" id="ppf-graf-maklum-balas" data-ppf-panel hidden aria-labelledby="ppf-chart-title"><h2 id="ppf-chart-title">Graf Maklum Balas</h2><p class="ppf-muted">Ringkasan penilaian pengguna mengikut kampus dan tempoh.</p><div class="ppf-empty"><h3>Data penilaian belum tersedia</h3><p>Graf akan dijana daripada data sebenar selepas endpoint analitik disambungkan.</p><a href="#maklum-balas" data-panel="maklum-balas">Buka semakan maklum balas</a></div></section>

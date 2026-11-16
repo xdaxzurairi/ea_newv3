@@ -4,7 +4,9 @@ Frontend menambah navigasi Terima Aduan & Inisiatif Jabatan, Semak Maklum Balas 
 
 ## Status semasa
 
-Borang ialah semakan tempatan sahaja. Butang Semak Maklumat tidak menghantar permintaan simpan. Tiada data peribadi disimpan dalam localStorage, sessionStorage atau fixture aplikasi. Panel maklum balas/graf memaparkan status sambungan belum tersedia; tiada statistik rekaan dipaparkan.
+Borang Terima Aduan bermula dengan No. Pekerja, pilihan Lisan/Bertulis dan Melalui. Semua aduan melalui aliran ini ialah inisiatif; pilihan Inisiatif telah dibuang daripada medium. Tiada borang ringkas nama/lokasi/keterangan atau simpanan pelayar. Butang Teruskan membuka URL setempat daripada atribut root `data-entry-url`; tanpa atribut tersebut UI memaparkan sambungan borang penuh belum tersedia.
+
+Panel maklum balas dan graf sudah menggunakan endpoint JSON yang disahkan di bawah, dengan penapis, ringkasan, pagination, graf dan jadual nilai.
 
 ## Kod medium warisan
 
@@ -16,18 +18,19 @@ Borang ialah semakan tempatan sahaja. Butang Semak Maklumat tidak menghantar per
 | Bertulis | Memo | 6 |
 | Bertulis | E-mel | 7 |
 | Bertulis | Minit Mesyuarat | 8 |
-| Inisiatif Jabatan | Inisiatif PPF | 4 |
 
 ## Kontrak backend yang dicadangkan — perlu disahkan sebelum sambungan
 
-`POST ajax/ppf_create.php`: medan `requestor`, `requestor_id`, `medium`, `phone`, `description` serta kod lokasi/seksyen/elemen yang disahkan server; balas `{ok:true,wr_id}` atau `{ok:false,error,fields?}`. Bootstrap PPF mesti menyediakan token CSRF; backend mesti menyelesaikan identiti pengadu dan kod lokasi, bukan mempercayai nama/lokasi teks daripada borang draf.
+BACKEND menyediakan laluan borang penuh PPF melalui `data-entry-url` pada root halaman. Frontend menghantar GET `txt_emnumber` dan `medium` ke laluan tersebut selepas validasi input.
 
-`GET ajax/ppf_feedback.php`: penapis kampus/tarikh/page; balas `{ok:true,feedback:[{wr_id,date,rating,comment}],pagination}`; guna guard PPF yang sama.
+Laluan borang penuh mesti mengesahkan pekerja, guard intranet + PPF/DFMS dan memaparkan borang eAduanV2 menggunakan pekerja terpilih, tanpa menukar identiti/sesi operator. Backend menentukan kategori inisiatif serta mengesahkan medium sebelum simpan.
 
-`GET ajax/ppf_feedback_summary.php`: penapis kampus/tarikh; balas `{ok:true,total,ratings:[{label,count}]}`; guna guard dan no-store yang sama. Frontend akan memaparkan graf serta jadual nilai boleh akses apabila kontrak disahkan.
+`GET ajax/ppf_feedback.php`: `feedback=all|ada|memuaskan|tidak_memuaskan|tiada`, penapis negeri/kampus/zon/seksyen/elemen/tarikh, wr_id, page. Respons `{ok,summary,complaints,pagination,filters,updated_at}`. Rekod mengandungi `feedback_code,feedback_label,feedback_notes,feedback_date` serta medan dashboard.
 
-Sebelum penghantaran sebenar diaktifkan, borang draf perlu disambung kepada pemilih kod lokasi dan kategori yang disokong backend. Jangan terus menggunakan aliran simpan aduan pengguna biasa untuk mencipta aduan bagi pihak pengadu lain.
+`GET ajax/ppf_feedback_chart.php`: `group=site|month` dan penapis negeri/kampus/zon/seksyen/elemen/tarikh. Respons `{ok,group,totals,series,filters,updated_at}`. Jumlah dan setiap item siri menggunakan `memuaskan,tidak_memuaskan,tiada,total`.
+
+Semua endpoint mengulangi guard dan no-store. Foto serta butiran menggunakan laluan PPF sedia ada. Endpoint biasa yang menganggap operator sebagai pengadu tidak sesuai untuk aliran pekerja terpilih ini.
 
 ## Pengesahan frontend
 
-Chrome desktop 1440px dan telefon 390px: 17 semakan regresi dashboard pada setiap saiz. Tambahan 12 semakan panel: buka borang, kod medium bertulis, Telefon untuk lisan, semakan maklumat, teks tanpa HTML injection, tiada permintaan simpan, kembali edit, reset medium, buka maklum balas, buka graf, tiada overflow mobile dan tiada ralat runtime.
+Chrome desktop 1440px dan telefon 390px: 18 semakan kontrak maklum balas/graf pada setiap saiz, termasuk 403/500, retry, no-store dan teks tanpa HTML injection. Menu unik dan tiada sasaran bertindih disahkan. Sembilan semakan aliran No. Pekerja lulus: medan wajib, Lisan/Bertulis sahaja, kod medium, tiada borang ringkas lama, laluan belum dikonfigurasi gagal dengan mesej jelas, reset serta tiada ralat runtime. Ujian data sebenar memerlukan akaun intranet dan sambungan backend.

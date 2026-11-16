@@ -269,31 +269,19 @@
         event.preventDefault();
         if (!entry.reportValidity()) return;
         const values = new FormData(entry);
-        const medium = entry.querySelector('[name=medium]:checked');
-        const items = [
-            ['Pengadu', entry.elements.requestor.selectedOptions[0].textContent],
-            ['Nama', values.get('requestor_name')], ['ID', values.get('requestor_id')],
-            ['Medium Aduan', mediumGroup.selectedOptions[0].textContent],
-            ['Melalui', medium ? medium.parentElement.textContent.trim() : '—'],
-            ['No. telefon', values.get('phone')], ['Lokasi', values.get('location_label')],
-            ['Keterangan', values.get('description')]
-        ];
-        find('review-fields').replaceChildren();
-        items.forEach(([label, value]) => find('review-fields').append(element('dt', label), element('dd', value)));
-        entry.hidden = true;
-        find('entry-review').hidden = false;
-        find('review-title').focus();
-    });
-    find('entry-edit').addEventListener('click', () => {
-        find('entry-review').hidden = true;
-        entry.hidden = false;
-        entry.elements.requestor.focus();
+        try {
+            const url = localUrl(root.dataset.entryUrl);
+            url.searchParams.set('txt_emnumber', values.get('txt_emnumber'));
+            url.searchParams.set('medium', values.get('medium'));
+            location.assign(url.href);
+        } catch {
+            find('entry-status').textContent = 'Borang penuh belum disambungkan untuk pekerja yang dipilih. Sila hubungi pentadbir sistem.';
+        }
     });
     entry.addEventListener('reset', () => {
         mediumOptions.hidden = true;
         mediumOptions.querySelectorAll('input').forEach((input) => { input.disabled = true; input.required = false; });
-        find('entry-review').hidden = true;
-        find('review-fields').replaceChildren();
+        find('entry-status').textContent = '';
     });
     window.addEventListener('pagehide', () => { entry.reset(); });
     updateMedium();
