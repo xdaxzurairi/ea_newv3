@@ -190,6 +190,8 @@
                 return;
             }
             if (response.status === 400) { fail('Penapis tidak sah. Semak pilihan carian dan julat tarikh.', false); return; }
+            if (response.status === 405) { fail('Kaedah permintaan tidak dibenarkan. Hubungi pentadbir sistem.', false); return; }
+            if (response.status === 500) { fail('Pelayan tidak dapat memuatkan aduan. Cuba semula sebentar lagi.', true); return; }
             if (!response.ok) throw new Error('network');
             const data = await response.json();
             if (!request.signal.aborted) render(data);

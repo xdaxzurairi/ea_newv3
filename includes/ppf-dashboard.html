@@ -3,9 +3,14 @@
   <nav class="ppf-sidebar" aria-label="Navigasi PPF">
     <div class="ppf-brand"><span>PPF</span><small>Pengurusan Fasiliti</small></div>
     <a href="?view=all" data-view="all" data-overview>Ringkasan</a>
-    <a href="?view=all" data-view="all">Semua aduan</a>
-    <a href="?view=requested" data-view="requested">Aduan baharu</a>
-    <a href="?view=completed" data-view="completed">Aduan siap</a>
+    <details class="ppf-submenu" open>
+      <summary>Semak Aduan</summary>
+      <div class="ppf-submenu-links">
+        <a href="?view=all" data-view="all">Aduan Keseluruhan</a>
+        <a href="?view=requested" data-view="requested">Aduan Baharu</a>
+        <a href="?view=completed" data-view="completed">Aduan Siap</a>
+      </div>
+    </details>
     <p class="ppf-sidebar-note">Pantau aduan fasiliti merentas kampus dalam satu tempat.</p>
   </nav>
   <div class="ppf-content">
