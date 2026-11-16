@@ -15,6 +15,23 @@
     let pages = 1;
     let options = {};
     let selected = new URLSearchParams(location.search);
+    const panels = ['terima-aduan', 'maklum-balas', 'graf-maklum-balas'];
+    function syncPanel() {
+        const active = location.hash.slice(1);
+        const hasPanel = panels.includes(active);
+        panels.forEach((name) => { find(name).hidden = name !== active; });
+        find('results').hidden = hasPanel;
+        root.querySelectorAll('[data-panel]').forEach((link) => {
+            if (hasPanel && link.dataset.panel === active) link.setAttribute('aria-current', 'page');
+            else link.removeAttribute('aria-current');
+        });
+        if (hasPanel) {
+            root.querySelectorAll('.ppf-sidebar [data-view]').forEach((link) => link.removeAttribute('aria-current'));
+            status.textContent = '';
+            errorPanel.hidden = true;
+        }
+        return hasPanel;
+    }
     function localUrl(value) {
         if (!value) throw new Error('configuration');
         const url = new URL(value, location.href);
@@ -163,6 +180,7 @@
     }
     async function load() {
         if (controller) controller.abort();
+        if (syncPanel()) { clear(); find('results').setAttribute('aria-busy', 'false'); return; }
         const request = new AbortController();
         controller = request;
         clear();
@@ -242,6 +260,54 @@
         find('toggle').setAttribute('aria-expanded', String(!form.hidden));
     });
     window.addEventListener('popstate', () => { selected = new URLSearchParams(location.search); normalize(); syncForm(); load(); });
+    window.addEventListener('hashchange', () => { syncForm(); load(); });
+    const entry = find('entry-form');
+    const mediumGroup = find('medium-group');
+    const mediumOptions = find('medium-options');
+    function updateMedium() {
+        mediumOptions.hidden = !mediumGroup.value;
+        mediumOptions.querySelectorAll('label').forEach((label) => {
+            const input = label.querySelector('input');
+            const visible = label.dataset.mediumGroup === mediumGroup.value;
+            label.hidden = !visible;
+            input.disabled = !visible;
+            input.required = visible;
+            input.checked = visible && mediumGroup.value !== 'bertulis';
+        });
+    }
+    mediumGroup.addEventListener('change', updateMedium);
+    entry.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!entry.reportValidity()) return;
+        const values = new FormData(entry);
+        const medium = entry.querySelector('[name=medium]:checked');
+        const items = [
+            ['Pengadu', entry.elements.requestor.selectedOptions[0].textContent],
+            ['Nama', values.get('requestor_name')], ['ID', values.get('requestor_id')],
+            ['Medium Aduan', mediumGroup.selectedOptions[0].textContent],
+            ['Melalui', medium ? medium.parentElement.textContent.trim() : '—'],
+            ['No. telefon', values.get('phone')], ['Lokasi', values.get('location_label')],
+            ['Keterangan', values.get('description')]
+        ];
+        find('review-fields').replaceChildren();
+        items.forEach(([label, value]) => find('review-fields').append(element('dt', label), element('dd', value)));
+        entry.hidden = true;
+        find('entry-review').hidden = false;
+        find('review-title').focus();
+    });
+    find('entry-edit').addEventListener('click', () => {
+        find('entry-review').hidden = true;
+        entry.hidden = false;
+        entry.elements.requestor.focus();
+    });
+    entry.addEventListener('reset', () => {
+        mediumOptions.hidden = true;
+        mediumOptions.querySelectorAll('input').forEach((input) => { input.disabled = true; input.required = false; });
+        find('entry-review').hidden = true;
+        find('review-fields').replaceChildren();
+    });
+    window.addEventListener('pagehide', () => { entry.reset(); });
+    updateMedium();
     window.addEventListener('pagehide', () => { if (controller) controller.abort(); clear(); });
     window.addEventListener('pageshow', (event) => { if (event.persisted) load(); });
     normalize();
