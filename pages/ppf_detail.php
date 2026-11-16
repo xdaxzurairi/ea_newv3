@@ -12,8 +12,8 @@ $wr = $wr_id > 0 ? dbFetchOne(
             FORMAT(date_requested, 'dd-MM-yyyy') AS date_requested_fmt,
             FORMAT(time_requested, 'HH:mm:ss') AS time_requested_fmt,
             FORMAT(date_stat_chg, 'dd-MM-yyyy HH:mm:ss') AS date_stat_chg_fmt
-     FROM wr WHERE wr_id = ?",
-    [$wr_id]
+     FROM wr WHERE wr_id = ? AND UPPER(RTRIM(ISNULL(section, ''))) <> ?",
+    [$wr_id, PPF_EXCLUDED_SECTION]
 ) : null;
 
 // Parameter penapis dashboard dikekalkan pada pautan kembali

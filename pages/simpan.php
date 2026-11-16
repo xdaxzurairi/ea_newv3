@@ -159,6 +159,9 @@ if ($proxy) {
     if ($em_number === '') {
         $requestor = '';
         $errorMsg  = 'Pekerja tidak dijumpai. Sila mulakan semula daripada Portal PPF.';
+    } elseif (strtoupper(trim($section)) === PPF_EXCLUDED_SECTION) {
+        $requestor = '';
+        $errorMsg  = 'Aduan seksyen ICT tidak diterima melalui Portal PPF.';
     }
 }
 

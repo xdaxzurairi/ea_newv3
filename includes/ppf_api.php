@@ -79,7 +79,8 @@ function ppfReadPage(): int
 /** @return string[] klausa WHERE (alias wr = w); $params diisi mengikut turutan. */
 function ppfCommonWhere(array $f, array &$params): array
 {
-    $where = [];
+    $where = ["UPPER(RTRIM(ISNULL(w.section, ''))) <> ?"];
+    $params[] = PPF_EXCLUDED_SECTION;
     foreach (['state_id', 'site_id', 'zone_id', 'section', 'prob_group'] as $col) {
         if ($f[$col] !== '') {
             $where[]  = "w.$col = ?";
@@ -187,7 +188,7 @@ function ppfFilterLists(array $f): array
         'zones'          => $f['site_id'] !== ''
             ? ppfOptions("SELECT zone_id, description FROM zone_uitm WHERE site_id = ? ORDER BY description", [$f['site_id']])
             : [],
-        'sections'       => ppfOptions("SELECT section, description FROM section WHERE section <> 'PREVENTIVE MAINT' ORDER BY section"),
+        'sections'       => ppfOptions("SELECT section, description FROM section WHERE section <> 'PREVENTIVE MAINT' AND UPPER(RTRIM(section)) <> ? ORDER BY section", [PPF_EXCLUDED_SECTION]),
         'problem_groups' => $f['section'] !== ''
             ? ppfOptions("SELECT prob_group, description FROM prob_group WHERE section = ? ORDER BY description", [$f['section']])
             : [],

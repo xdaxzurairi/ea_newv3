@@ -4,6 +4,7 @@ declare(strict_types=1);
 /**
  * eAduan v3 – guard Portal PPF: sesi sah + staf AKTIF (em) yang berdaftar dalam afm_users dengan role_name tidak kosong
  * (sama seperti capaian portal PPF eAduan lama / kad menu portalFMS) + rangkaian intranet.
+ * Staf yang berdaftar dalam seksyen ICT (user_section) dikecualikan; aduan seksyen ICT tidak dipaparkan (lihat PPF_EXCLUDED_SECTION).
  * Gagal tertutup: tanpa PPF_INTRANET_CIDR dalam persekitaran, semua akses ditolak (403).
  *
  * Persekitaran (.env.php):
@@ -15,6 +16,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/session_init.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/../config/env.php';
+
+/** Seksyen yang dikeluarkan daripada portal PPF: aduannya tidak dipaparkan dan stafnya tiada capaian. */
+const PPF_EXCLUDED_SECTION = 'ICT';
 
 function ppfSendNoStore(): void
 {
@@ -122,8 +126,9 @@ function ppfIsPpfStaff(): bool
             return false;
         }
         return (bool) dbFetchColumn(
-            "SELECT 1 FROM afm_users WHERE user_name = ? AND RTRIM(ISNULL(role_name, '')) <> ''",
-            [$emNumber]
+            "SELECT 1 FROM afm_users WHERE user_name = ? AND RTRIM(ISNULL(role_name, '')) <> ''
+             AND NOT EXISTS (SELECT 1 FROM user_section s WHERE RTRIM(s.no_staf) = ? AND UPPER(RTRIM(s.section)) = ?)",
+            [$emNumber, $emNumber, PPF_EXCLUDED_SECTION]
         );
     } catch (Throwable $e) {
         error_log('ppf_guard: semakan akses PPF gagal: ' . $e->getMessage());

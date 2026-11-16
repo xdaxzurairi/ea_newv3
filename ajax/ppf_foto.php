@@ -17,7 +17,7 @@ if ($wr_id <= 0 || $idx < 1 || $idx > 3) {
 }
 
 $col = 'foto' . $idx;
-$row = dbFetchOne("SELECT {$col} AS filename FROM wr WHERE wr_id = ?", [$wr_id]);
+$row = dbFetchOne("SELECT {$col} AS filename FROM wr WHERE wr_id = ? AND UPPER(RTRIM(ISNULL(section, ''))) <> ?", [$wr_id, PPF_EXCLUDED_SECTION]);
 
 if (!$row || empty($row['filename'])) {
     http_response_code(404);
