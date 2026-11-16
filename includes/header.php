@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/ppf_guard.php"; $canAccessPpf = ppfCanAccess(); ?>
 <!DOCTYPE html>
 <html lang="ms">
 <head>
@@ -47,6 +48,9 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="<?php echo baseUrl(); ?>/pages/borang.php"><i class="bi bi-pencil-square"></i> Lapor Aduan</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo baseUrl(); ?>/pages/semak.php"><i class="bi bi-search"></i> Semak Aduan</a></li>
+                <?php if (!empty($canAccessPpf)): ?>
+                <li class="nav-item"><a class="nav-link" href="<?php echo baseUrl(); ?>/pages/ppf.php"><i class="bi bi-building" aria-hidden="true"></i> Portal PPF</a></li>
+                <?php endif; ?>
                 <li class="nav-item">
                     <span class="nav-link text-white-50"><i class="bi bi-person-circle"></i> <?php echo e(sess('user_name', '')); ?></span>
                 </li>
