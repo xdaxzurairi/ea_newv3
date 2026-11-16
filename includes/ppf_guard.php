@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * eAduan v3 – guard Portal PPF: sesi sah + (staf PPF dp_id A0140/N00020 ATAU role DFMS GROUP dalam afm_users) + rangkaian intranet.
+ * eAduan v3 – guard Portal PPF: sesi sah + (staf AKTIF dengan dp_id A0140/N00020 ATAU role DFMS GROUP dalam afm_users) + rangkaian intranet.
  * Gagal tertutup: tanpa PPF_INTRANET_CIDR dalam persekitaran, semua akses ditolak (403).
  *
  * Persekitaran (.env.php):
@@ -114,8 +114,11 @@ function ppfIsPpfStaff(): bool
         return false;
     }
     try {
-        $dp = dbFetchColumn("SELECT dp_id FROM em WHERE em_number = ?", [$emNumber]);
-        if (in_array(strtoupper(trim((string) $dp)), PPF_DP_IDS, true)) {
+        $em = dbFetchOne("SELECT dp_id, status FROM em WHERE em_number = ?", [$emNumber]);
+        if (!$em || strtoupper(trim((string) $em['status'])) !== 'AKTIF') {
+            return false;
+        }
+        if (in_array(strtoupper(trim((string) $em['dp_id'])), PPF_DP_IDS, true)) {
             return true;
         }
         return (bool) dbFetchColumn(
