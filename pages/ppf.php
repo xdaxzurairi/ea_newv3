@@ -22,4 +22,5 @@ require_once __DIR__ . '/../includes/header.php';
 <link href="<?php echo e($base); ?>/assets/css/ppf.css" rel="stylesheet">
 <?php echo $fragment; ?>
 <script src="<?php echo e($base); ?>/assets/js/ppf-dashboard.js" defer></script>
+<script src="<?php echo e($base); ?>/assets/js/ppf-feedback.js" defer></script>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
