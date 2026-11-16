@@ -20,7 +20,7 @@ $fragment = str_replace($root, $root . $attrs, $fragment);
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
-<link href="<?php echo e($base); ?>/assets/css/ppf.css" rel="stylesheet">
+<link href="<?php echo e($base); ?>/assets/css/ppf.css?v=<?php echo filemtime(__DIR__ . '/../assets/css/ppf.css'); ?>" rel="stylesheet">
 <?php echo $fragment; ?>
 <script src="<?php echo e($base); ?>/assets/js/ppf-dashboard.js?v=20261116-no-summary" defer></script>
 <script src="<?php echo e($base); ?>/assets/js/ppf-feedback.js" defer></script>
