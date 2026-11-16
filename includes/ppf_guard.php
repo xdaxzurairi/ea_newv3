@@ -8,6 +8,7 @@ declare(strict_types=1);
  * Persekitaran (.env.php):
  *   PPF_INTRANET_CIDR     senarai CIDR/IP dipisah koma, contoh "10.0.0.0/8,172.16.0.0/12"
  *   PPF_ALLOW_INTERNET    (sementara) "1" = langkau semakan intranet; sesi + dp_id PPF tetap dikuatkuasa
+ *   PPF_ALLOW_USERS       (sementara) no. staf dipisah koma yang melangkau semakan intranet; peranan PPF/DFMS aktif tetap diperlukan
  *   PPF_TRUSTED_PROXIES   (pilihan) CIDR/IP proksi yang dipercayai untuk X-Forwarded-For
  */
 require_once __DIR__ . '/session_init.php';
@@ -97,6 +98,10 @@ function ppfClientIp(): string
 function ppfIsIntranet(): bool
 {
     if (getenv('PPF_ALLOW_INTERNET') === '1') {
+        return true;
+    }
+    $emNumber = trim((string) sess('txt_emnumber', ''));
+    if ($emNumber !== '' && in_array($emNumber, ppfEnvList('PPF_ALLOW_USERS'), true)) {
         return true;
     }
     $cidrs = ppfEnvList('PPF_INTRANET_CIDR');
