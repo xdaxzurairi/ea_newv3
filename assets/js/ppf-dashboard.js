@@ -54,7 +54,6 @@
     function clear() {
         summaryNodes.forEach((node) => node.querySelector('strong').textContent = '—');
         find('rows').replaceChildren();
-        find('attention').replaceChildren();
         find('empty').hidden = true;
         find('prev').disabled = true;
         find('next').disabled = true;
@@ -153,16 +152,6 @@
             rows.append(row);
         });
         find('rows').replaceChildren(rows);
-        const attention = document.createDocumentFragment();
-        data.attention.slice(0, 5).forEach((record) => {
-            const item = element('li');
-            const box = element('div');
-            box.append(detailLink(record), element('small', [record.problem_group_label, record.site_name].filter(Boolean).join(' · ')));
-            item.append(box, element('span', Number.isSafeInteger(record.age_days) && record.age_days >= 0 ? number.format(record.age_days) + ' hari' : '—', 'ppf-age'));
-            attention.append(item);
-        });
-        if (!data.attention.length) attention.append(element('li', 'Tiada aduan baharu untuk penapis ini.'));
-        find('attention').replaceChildren(attention);
         find('empty').hidden = data.complaints.length !== 0;
         currentPage = p.page;
         pages = p.pages;
@@ -185,7 +174,7 @@
         controller = request;
         clear();
         errorPanel.hidden = true;
-        const results = root.querySelector('#ppf-attention-panel').parentElement;
+        const results = find('results');
         results.setAttribute('aria-busy', 'true');
         status.textContent = 'Memuatkan aduan…';
         try {
