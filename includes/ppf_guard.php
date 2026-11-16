@@ -2,21 +2,19 @@
 declare(strict_types=1);
 
 /**
- * eAduan v3 – guard Portal PPF: sesi sah + (staf AKTIF dengan dp_id A0140/N00020 ATAU role DFMS GROUP dalam afm_users) + rangkaian intranet.
+ * eAduan v3 – guard Portal PPF: sesi sah + staf AKTIF (em) yang berdaftar dalam afm_users dengan role_name tidak kosong
+ * (sama seperti capaian portal PPF eAduan lama / kad menu portalFMS) + rangkaian intranet.
  * Gagal tertutup: tanpa PPF_INTRANET_CIDR dalam persekitaran, semua akses ditolak (403).
  *
  * Persekitaran (.env.php):
  *   PPF_INTRANET_CIDR     senarai CIDR/IP dipisah koma, contoh "10.0.0.0/8,172.16.0.0/12"
- *   PPF_ALLOW_INTERNET    (sementara) "1" = langkau semakan intranet; sesi + dp_id PPF tetap dikuatkuasa
- *   PPF_ALLOW_USERS       (sementara) no. staf dipisah koma yang melangkau semakan intranet; peranan PPF/DFMS aktif tetap diperlukan
+ *   PPF_ALLOW_INTERNET    (sementara) "1" = langkau semakan intranet; sesi + staf aktif berperanan tetap dikuatkuasa
+ *   PPF_ALLOW_USERS       (sementara) no. staf dipisah koma yang melangkau semakan intranet; staf aktif berperanan tetap diperlukan
  *   PPF_TRUSTED_PROXIES   (pilihan) CIDR/IP proksi yang dipercayai untuk X-Forwarded-For
  */
 require_once __DIR__ . '/session_init.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/../config/env.php';
-
-const PPF_DP_IDS = ['A0140', 'N00020'];
-const PPF_DFMS_ROLE = 'DFMS GROUP';
 
 function ppfSendNoStore(): void
 {
@@ -119,19 +117,16 @@ function ppfIsPpfStaff(): bool
         return false;
     }
     try {
-        $em = dbFetchOne("SELECT dp_id, status FROM em WHERE em_number = ?", [$emNumber]);
+        $em = dbFetchOne("SELECT status FROM em WHERE em_number = ?", [$emNumber]);
         if (!$em || strtoupper(trim((string) $em['status'])) !== 'AKTIF') {
             return false;
         }
-        if (in_array(strtoupper(trim((string) $em['dp_id'])), PPF_DP_IDS, true)) {
-            return true;
-        }
         return (bool) dbFetchColumn(
-            "SELECT 1 FROM afm_users WHERE user_name = ? AND UPPER(RTRIM(role_name)) = ?",
-            [$emNumber, PPF_DFMS_ROLE]
+            "SELECT 1 FROM afm_users WHERE user_name = ? AND RTRIM(ISNULL(role_name, '')) <> ''",
+            [$emNumber]
         );
     } catch (Throwable $e) {
-        error_log('ppf_guard: semakan akses PPF/DFMS gagal: ' . $e->getMessage());
+        error_log('ppf_guard: semakan akses PPF gagal: ' . $e->getMessage());
         return false;
     }
 }
