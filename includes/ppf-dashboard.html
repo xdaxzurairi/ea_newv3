@@ -1,0 +1,42 @@
+<!-- Include selepas guard PPF berjaya. CSS/JS dimuatkan oleh halaman induk. -->
+<section id="ppf-dashboard" class="ppf-shell" aria-label="Portal PPF">
+  <nav class="ppf-sidebar" aria-label="Navigasi PPF">
+    <div class="ppf-brand"><span>PPF</span><small>Pengurusan Fasiliti</small></div>
+    <a href="?view=all" data-view="all" data-overview>Ringkasan</a>
+    <a href="?view=all" data-view="all">Semua aduan</a>
+    <a href="?view=requested" data-view="requested">Aduan baharu</a>
+    <a href="?view=completed" data-view="completed">Aduan siap</a>
+    <p class="ppf-sidebar-note">Pantau aduan fasiliti merentas kampus dalam satu tempat.</p>
+  </nav>
+  <div class="ppf-content">
+    <header class="ppf-heading"><div><p class="ppf-eyebrow">PORTAL PPF</p><h1>Pusat Operasi PPF</h1><p class="ppf-muted">Semua kampus · Paparan baca-sahaja</p></div><span class="ppf-network">Intranet</span></header>
+    <p class="ppf-status" role="status" aria-live="polite" id="ppf-status">Menyediakan paparan…</p>
+    <div class="ppf-alert" id="ppf-error" role="alert" hidden><h2 id="ppf-error-title">Paparan tidak tersedia</h2><p id="ppf-error-message"></p><button type="button" id="ppf-retry">Cuba semula</button></div>
+    <div id="ppf-results" aria-busy="false">
+      <section class="ppf-stats" aria-label="Ringkasan aduan">
+        <a class="ppf-stat" href="?view=all" data-view="all"><span>Keseluruhan aduan</span><strong data-count="all">—</strong><small>Lihat semua aduan <span aria-hidden="true">↗</span></small></a>
+        <a class="ppf-stat ppf-stat-warm" href="?view=requested" data-view="requested"><span>Aduan baharu</span><strong data-count="requested">—</strong><small>Menunggu tindakan <span aria-hidden="true">↗</span></small></a>
+        <a class="ppf-stat ppf-stat-green" href="?view=completed" data-view="completed"><span>Aduan siap</span><strong data-count="completed">—</strong><small>Kerja telah selesai <span aria-hidden="true">↗</span></small></a>
+      </section>
+      <section class="ppf-panel" id="ppf-attention-panel"><div class="ppf-section-heading"><div><h2>Perlu perhatian</h2><p class="ppf-muted">Aduan baharu paling lama dahulu</p></div><a href="?view=requested" data-view="requested">Lihat aduan baharu</a></div><ul class="ppf-attention" id="ppf-attention"></ul></section>
+      <section class="ppf-panel">
+        <div class="ppf-section-heading"><div><h2 id="ppf-list-title">Semua aduan</h2><p class="ppf-muted" id="ppf-updated">Data belum dimuatkan</p></div><button type="button" id="ppf-toggle" aria-expanded="true" aria-controls="ppf-filters">Penapis <span aria-hidden="true">⌄</span></button></div>
+        <form id="ppf-filters" class="ppf-filters">
+          <label>Negeri<select name="state_id" data-options="states"><option value="">Semua negeri</option></select></label>
+          <label>Kampus<select name="site_id" data-options="sites"><option value="">Semua kampus</option></select></label>
+          <label>Zon<select name="zone_id" data-options="zones"><option value="">Semua zon</option></select></label>
+          <label>Seksyen<select name="section" data-options="sections"><option value="">Semua seksyen</option></select></label>
+          <label>Elemen<select name="prob_group" data-options="problem_groups"><option value="">Semua elemen</option></select></label>
+          <label>Dari tarikh<input name="date_from" type="date"></label><label>Hingga tarikh<input name="date_to" type="date"></label>
+          <label>No. aduan<input name="wr_id" inputmode="numeric" pattern="[0-9]+" placeholder="Contoh: 24119"></label>
+          <label>ID staf<input name="staff_id" maxlength="40" placeholder="Nombor staf"></label><label>ID pelajar<input name="student_id" maxlength="40" placeholder="Nombor pelajar"></label>
+          <div class="ppf-form-actions"><button class="ppf-primary" type="submit">Cari aduan</button><button type="reset">Set semula</button></div>
+        </form>
+        <div class="ppf-table-wrap"><table class="ppf-table"><caption class="ppf-sr-only">Senarai aduan fasiliti mengikut penapis dipilih</caption><thead><tr><th scope="col">No. aduan / Tarikh</th><th scope="col">Pengadu</th><th scope="col">Kampus / Lokasi</th><th scope="col">Kategori</th><th scope="col">Status</th></tr></thead><tbody id="ppf-rows"></tbody></table></div>
+        <div class="ppf-empty" id="ppf-empty" hidden><h3>Tiada aduan sepadan</h3><p>Ubah pilihan carian atau set semula penapis.</p><button type="button" id="ppf-empty-reset">Set semula penapis</button></div>
+        <footer class="ppf-pagination"><p id="ppf-page-label">Data belum dimuatkan</p><div><button type="button" id="ppf-prev" disabled>Sebelumnya</button><button type="button" id="ppf-next" disabled>Seterusnya</button></div></footer>
+      </section>
+    </div>
+    <noscript><p class="ppf-alert">Aktifkan JavaScript untuk menggunakan carian dan senarai Portal PPF.</p></noscript>
+  </div>
+</section>

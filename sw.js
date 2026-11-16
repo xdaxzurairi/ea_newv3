@@ -5,7 +5,7 @@
  * cache kekal pada peranti kongsi selepas log keluar.
  * Bump CACHE_VERSION → cache lama (termasuk HTML yang pernah di-cache) dipadam semasa activate.
  */
-const CACHE_VERSION = 'eaduan-v3-cache-v5';
+const CACHE_VERSION = 'eaduan-v3-cache-v6';
 const OFFLINE_URL = '/eAduanV2/offline.html';
 
 const PRECACHE_ASSETS = [
@@ -54,6 +54,15 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(request.url);
 
     if (request.method !== 'GET') return;
+
+    // Portal PPF sentiasa rangkaian sahaja, termasuk permintaan tanpa Accept HTML.
+    if (url.origin === self.location.origin && (
+        url.pathname === '/eAduanV2/pages/ppf.php'
+        || url.pathname === '/eAduanV2/pages/ppf_detail.php'
+    )) {
+        event.respondWith(fetch(request, { cache: 'no-store' }));
+        return;
+    }
 
     if (url.pathname.startsWith('/eAduanV2/ajax/')) return;
 
