@@ -50,9 +50,7 @@
     const errorPanel = find('error');
     errorPanel.hidden = true;
     errorPanel.setAttribute('role', 'alert');
-    const summaryNodes = [...root.querySelectorAll('.ppf-stat')];
     function clear() {
-        summaryNodes.forEach((node) => node.querySelector('strong').textContent = '—');
         find('rows').replaceChildren();
         find('empty').hidden = true;
         find('prev').disabled = true;
@@ -93,7 +91,7 @@
             field.value = value;
         });
         root.querySelectorAll('.ppf-sidebar [data-view]').forEach((link) => {
-            const active = link.dataset.view === selected.get('view') && (link.hasAttribute('data-overview') === (location.hash === '#ringkasan'));
+            const active = link.dataset.view === selected.get('view');
             if (active) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
         });
         find('list-title').textContent = labels[selected.get('view')];
@@ -130,11 +128,7 @@
         row.append(td);
     }
     function render(data) {
-        if (!data || data.ok !== true || !data.summary || !Array.isArray(data.complaints) || !Array.isArray(data.attention) || !data.pagination || !data.filters) throw new Error('response');
-        ['all', 'requested', 'completed'].forEach((key, i) => {
-            if (!Number.isSafeInteger(data.summary[key]) || data.summary[key] < 0) throw new Error('response');
-            summaryNodes[i].querySelector('strong').textContent = number.format(data.summary[key]);
-        });
+        if (!data || data.ok !== true || !Array.isArray(data.complaints) || !data.pagination || !data.filters) throw new Error('response');
         const p = data.pagination;
         if (![p.page, p.per_page, p.total, p.pages].every(Number.isSafeInteger) || p.page < 1 || p.per_page !== 10 || p.total < 0 || p.pages < 0 || p.page > Math.max(1, p.pages)) throw new Error('response');
         options = data.filters;
@@ -237,7 +231,7 @@
         const params = new URLSearchParams(selected);
         params.set('view', link.dataset.view);
         params.delete('page');
-        navigate(params, link.hasAttribute('data-overview') ? 'ringkasan' : '');
+        navigate(params);
     }));
     ['prev', 'next'].forEach((key) => find(key).addEventListener('click', () => {
         const params = new URLSearchParams(selected);
