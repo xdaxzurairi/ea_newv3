@@ -23,10 +23,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pdo = getPdo();
 
-$requestor    = sess('requestor', '1');
-$txt_emnumber = sess('txt_emnumber', '');
-$no_stud      = sess('no_stud', '');
-$no_kp        = sess('no_kp', '');
+require_once __DIR__ . '/../includes/ppf_proxy.php';
+// Identiti pelapor: sesi, atau pekerja terpilih operator PPF (ppf=1) — sesi operator tidak ditukar
+$rep          = reporterIdentity('1');
+$ppf          = $rep['proxy'] ? '1' : '';
+$requestor    = $rep['requestor'];
+$txt_emnumber = $rep['txt_emnumber'];
+$no_stud      = $rep['no_stud'];
+$no_kp        = $rep['no_kp'];
 
 $location   = req('location', '');
 $infra      = req('infra', '');
@@ -244,6 +248,7 @@ require_once __DIR__ . '/../includes/header.php';
     <input type="hidden" name="txt_emnumber" value="<?php echo e($txt_emnumber); ?>">
     <input type="hidden" name="no_stud" value="<?php echo e($no_stud); ?>">
     <input type="hidden" name="no_kp" value="<?php echo e($no_kp); ?>">
+    <input type="hidden" name="ppf" value="<?php echo e($ppf); ?>">
 
     <input type="hidden" name="neg" id="neg" value="<?php echo e($neg); ?>">
     <input type="hidden" name="idneg" id="idneg" value="<?php echo e($idneg); ?>">
@@ -807,7 +812,7 @@ function popUpbilik(){
     var ns = '<?php echo e($no_stud); ?>';
     var rq = '<?php echo e($requestor); ?>';
     var loc = '<?php echo e($location); ?>';
-    window.open('<?php echo baseUrl(); ?>/pages/bilik_sendiri.php?txt_emnumber='+em+'&no_stud='+ns+'&requestor='+rq+'&location='+loc, 'bilik', 'width=850,height=300,scrollbars=yes');
+    window.open('<?php echo baseUrl(); ?>/pages/bilik_sendiri.php?txt_emnumber='+em+'&no_stud='+ns+'&requestor='+rq+'&location='+loc<?php echo $ppf === '1' ? "+'&ppf=1'" : ''; ?>, 'bilik', 'width=850,height=300,scrollbars=yes');
 }
 
 function validateAndSubmit() {

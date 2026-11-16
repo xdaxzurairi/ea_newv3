@@ -22,11 +22,14 @@ validateCsrf();
 
 $pdo = getPdo();
 
-// Identiti pelapor WAJIB dari sesi — jangan percaya nilai POST (boleh dipalsukan)
-$requestor    = (string) sess('requestor', '');
-$txt_emnumber = (string) sess('txt_emnumber', '');
-$no_stud      = (string) sess('no_stud', '');
-$no_kp        = (string) sess('no_kp', '');
+// Identiti pelapor WAJIB dari sesi (atau pekerja terpilih operator PPF yang disahkan server) — jangan percaya nilai POST (boleh dipalsukan)
+require_once __DIR__ . '/../includes/ppf_proxy.php';
+$rep          = reporterIdentity();
+$proxy        = $rep['proxy'];
+$requestor    = $rep['requestor'];
+$txt_emnumber = $rep['txt_emnumber'];
+$no_stud      = $rep['no_stud'];
+$no_kp        = $rep['no_kp'];
 $location     = post('location', '8');
 $infra        = post('infra', '1');
 $idnegeri     = post('idnegeri', '');
@@ -43,7 +46,7 @@ $prob_type    = post('prob_type', '');
 $prob_description = post('prob_description', '');
 $loc_desc     = post('loc_desc', '');
 $koordinat_lokasi = post('koordinat_lokasi', '');
-$medium       = post('medium', '1');
+$medium       = $proxy ? $rep['medium'] : post('medium', '1');
 
 // Bilik sendiri: neg/kamp/bang/blk/fl/ruang = ID sebenar
 $neg_val   = post('neg', '');
@@ -148,6 +151,15 @@ if ($requestor == '1') {
         $requestor_name = trim($luar_row['name_user']); // nama pengguna luar
     }
     $type_req = '3';
+}
+
+// Aliran PPF (bagi pihak pekerja): sentiasa inisiatif (type_req=5); pekerja mesti masih wujud
+if ($proxy) {
+    $type_req = '5';
+    if ($em_number === '') {
+        $requestor = '';
+        $errorMsg  = 'Pekerja tidak dijumpai. Sila mulakan semula daripada Portal PPF.';
+    }
 }
 
 /**
@@ -301,6 +313,11 @@ try {
         $success = $wr_id !== null;
     }
 
+    if ($success && $proxy) {
+        error_log("ppf_proxy: wr_id={$wr_id} operator={$rep['operator']} pekerja={$em_number} medium={$medium}");
+        unset($_SESSION['ppf_proxy']);
+    }
+
     if ($success) {
         require_once __DIR__ . '/../lib/email_embom.php';
         email_embom($wr_id, $pdo);
@@ -339,10 +356,10 @@ require_once __DIR__ . '/../includes/header.php';
         </p>
         <p class="text-muted" style="font-size:0.85rem;">Sila simpan nombor aduan ini untuk rujukan semakan status aduan anda.</p>
         <div class="d-flex justify-content-center gap-3 mt-3">
-            <a href="<?php echo baseUrl(); ?>/pages/borang.php" class="btn btn-uitm-gold">
+            <a href="<?php echo baseUrl() . ($proxy ? '/pages/ppf.php#terima-aduan' : '/pages/borang.php'); ?>" class="btn btn-uitm-gold">
                 <i class="bi bi-plus-circle"></i> Aduan Baru
             </a>
-            <a href="<?php echo baseUrl(); ?>/pages/semak.php" class="btn btn-uitm">
+            <a href="<?php echo baseUrl() . ($proxy ? '/pages/ppf_detail.php?wr_id=' . (int) $wr_id : '/pages/semak.php'); ?>" class="btn btn-uitm">
                 <i class="bi bi-search"></i> Semak Aduan
             </a>
             <a href="<?php echo baseUrl(); ?>/pages/thanx.php" class="btn btn-outline-secondary">

@@ -14,6 +14,7 @@ $fragment = (string) file_get_contents(__DIR__ . '/../includes/ppf-dashboard.htm
 $root = '<section id="ppf-dashboard" class="ppf-shell"';
 $attrs = ' data-endpoint="' . e($base . '/ajax/ppf_dashboard.php') . '"'
     . ' data-detail-url="' . e($base . '/pages/ppf_detail.php') . '"'
+    . ' data-entry-url="' . e($base . '/pages/ppf_borang.php') . '"'
     . ' data-login-url="' . e($base . '/index.php') . '"';
 $fragment = str_replace($root, $root . $attrs, $fragment);
 

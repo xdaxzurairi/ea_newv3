@@ -24,9 +24,11 @@ if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
 }
 
 // Identiti dari sesi sahaja — parameter GET diabaikan (elak intip bilik orang lain)
-$no_em     = trim((string) sess('txt_emnumber', ''));
-$no_stud   = trim((string) sess('no_stud', ''));
-$requestor = trim((string) sess('requestor', ''));
+require_once __DIR__ . '/../includes/ppf_proxy.php';
+$rep       = reporterIdentity('', true);
+$no_em     = trim($rep['txt_emnumber']);
+$no_stud   = trim($rep['no_stud']);
+$requestor = trim($rep['requestor']);
 $location  = trim($_GET['location'] ?? '');
 
 $rooms = [];

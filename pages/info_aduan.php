@@ -19,11 +19,14 @@ if (!empty($_SESSION['token_exp']) && $_SESSION['token_exp'] < time()) {
 
 validateCsrf();
 
-// Identiti pelapor WAJIB dari sesi — jangan percaya nilai POST
-$requestor    = (string) sess('requestor', '');
-$txt_emnumber = (string) sess('txt_emnumber', '');
-$no_stud      = (string) sess('no_stud', '');
-$no_kp        = (string) sess('no_kp', '');
+// Identiti pelapor WAJIB dari sesi (atau pekerja terpilih operator PPF yang disahkan server) — jangan percaya nilai POST
+require_once __DIR__ . '/../includes/ppf_proxy.php';
+$rep          = reporterIdentity();
+$ppf          = $rep['proxy'] ? '1' : '';
+$requestor    = $rep['requestor'];
+$txt_emnumber = $rep['txt_emnumber'];
+$no_stud      = $rep['no_stud'];
+$no_kp        = $rep['no_kp'];
 
 $location     = post('location', '8');
 $infra        = post('infra', '1');
@@ -189,7 +192,7 @@ if ($id_subinfra) {
 }
 
 $mediumLabels = getMediumLabels();
-$medium = post('medium', '1');
+$medium = $rep['proxy'] ? $rep['medium'] : post('medium', '1');
 
 $pageTitle = 'Pengesahan Aduan';
 require_once __DIR__ . '/../includes/header.php';
@@ -292,7 +295,7 @@ require_once __DIR__ . '/../includes/header.php';
         'location', 'infra', 'idnegeri', 'idkampus', 'idbangunan', 'idblok',
         'idfloor', 'idrm', 'idkat_infra', 'id_subinfra',
         'section', 'prob_group', 'prob_type', 'prob_description', 'loc_desc',
-        'koordinat_lokasi', 'medium',
+        'koordinat_lokasi', 'medium', 'ppf',
         'idneg', 'idkamp', 'idbang', 'idblk', 'idfl', 'idruang',
         'neg', 'kamp', 'bang', 'blk', 'fl', 'ruang',
     ];
