@@ -99,7 +99,7 @@ if (preg_match('/^(\d{6,15})@student\.uitm\.edu\.my$/', $emailLower, $m)) {
 }
 
 if ($type === 'staf') {
-    $row = dbFetchOne("SELECT em_number, em_id FROM em WHERE email = ?", [$email]);
+    $row = dbFetchOne("SELECT em_number, em_id FROM em WHERE email = ? ORDER BY CASE WHEN UPPER(RTRIM(status)) = 'AKTIF' THEN 0 ELSE 1 END, em_number", [$email]);
     if (!$row) {
         echo '<p>Email <strong>' . e($email) . '</strong> tidak dijumpai dalam jadual staf (em).</p>';
         echo '<p><a href="' . baseUrl() . '/index.php">Kembali</a></p>';
