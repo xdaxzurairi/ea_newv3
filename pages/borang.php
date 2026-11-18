@@ -490,7 +490,10 @@ require_once __DIR__ . '/../includes/header.php';
             ?>
 
             <div id="validation-alert-wrap"></div>
-            <div class="text-center mt-3 pt-3 border-top">
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-3 pt-3 border-top">
+                <a href="https://fms.uitm.edu.my/portalFMS/" class="btn btn-outline-secondary px-4 py-2">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Keluar ke portalFMS
+                </a>
                 <button type="button" class="btn btn-uitm px-5" id="btnTeruskan"
                         onclick="validateAndSubmit();">
                     <i class="bi bi-arrow-right-circle"></i> Teruskan

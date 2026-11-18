@@ -6,9 +6,11 @@
 
     if (!('serviceWorker' in navigator)) return;
 
+    const appBase = new URL('../../', document.currentScript.src);
+
     window.addEventListener('load', () => {
         navigator.serviceWorker
-            .register('/eAduanV2/sw.js', { scope: '/eAduanV2/' })
+            .register(new URL('sw.js', appBase).href, { scope: appBase.href })
             .then((reg) => {
                 reg.addEventListener('updatefound', () => {
                     const newWorker = reg.installing;

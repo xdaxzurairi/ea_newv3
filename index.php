@@ -35,7 +35,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="e-Aduan">
-    <meta name="application-name" content="e-Aduan v3">
+    <meta name="application-name" content="e-Aduan v2">
     <meta name="msapplication-TileColor" content="#5B2D8E">
     <meta name="msapplication-TileImage" content="<?php echo baseUrl(); ?>/assets/icons/icon-144x144.png">
 
@@ -59,7 +59,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         <a class="site-brand" href="<?php echo baseUrl(); ?>/" aria-label="e-Aduan v3, Universiti Teknologi MARA">
             <span class="uitm-crest"><img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" width="204" height="88"></span>
             <span class="site-university">UNIVERSITI<br>TEKNOLOGI<br>MARA</span>
-            <span class="site-brand-name">e-Aduan Fasiliti v3</span>
+            <span class="site-brand-name">e-Aduan Fasiliti v2</span>
         </a>
         <details class="login-help">
             <summary>Bantuan</summary>
@@ -81,7 +81,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
     <section class="login-card" aria-labelledby="login-heading">
         <div class="card-brand">
             <span class="uitm-crest"><img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" width="204" height="88"></span>
-            <div class="card-brand-title">e-Aduan Fasiliti v3</div>
+            <div class="card-brand-title">e-Aduan Fasiliti v2</div>
             <p>Universiti Teknologi MARA</p>
         </div>
 
@@ -130,6 +130,11 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
             </button>
             <p class="pwa-install-hint" id="pwa-install-hint"></p>
         </div>
+
+        <a href="https://fms.uitm.edu.my/portalFMS/" class="login-btn btn-google mt-3">
+            <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+            Kembali ke portalFMS
+        </a>
 
         <p class="login-trust"><i class="bi bi-lock" aria-hidden="true"></i> Akses selamat melalui akaun anda</p>
     </section>
