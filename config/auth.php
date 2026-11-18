@@ -5,7 +5,8 @@ require_once __DIR__ . '/env.php';
 
 // Domain production yang dibenarkan => base URL masing-masing (hos lain guna env)
 $hostBases = [
-    'aduanfasiliti.uitm.edu.my' => 'https://aduanfasiliti.uitm.edu.my',
+    'aduanfasiliti.uitm.edu.my'    => 'https://aduanfasiliti.uitm.edu.my',
+    'aduanfasilitidev.uitm.edu.my' => 'https://aduanfasilitidev.uitm.edu.my',
     'fms.uitm.edu.my'           => 'https://fms.uitm.edu.my/eAduanV2',
 ];
 $reqHost  = strtolower(explode(':', (string)($_SERVER['HTTP_HOST'] ?? ''))[0]);
