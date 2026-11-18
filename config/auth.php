@@ -28,4 +28,10 @@ return [
 
     // Base URL projek (tanpa trailing slash)
     'base_url'             => $hostBase ?? (getenv('BASE_URL') ?: ''),
+
+    // Pautan balik ke portalFMS ikut persekitaran (hos dev => fmsdev, selainnya => prod); PORTAL_FMS_URL menimpa
+    'portal_fms_url'       => getenv('PORTAL_FMS_URL')
+        ?: (in_array($reqHost, ['aduanfasilitidev.uitm.edu.my', 'fmsdev.uitm.edu.my'], true)
+            ? 'https://fmsdev.uitm.edu.my/portalFMS/'
+            : 'https://fms.uitm.edu.my/portalFMS/'),
 ];
