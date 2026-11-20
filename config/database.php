@@ -23,7 +23,7 @@ $attempts = [];
 
 if (extension_loaded('pdo_sqlsrv')) {
     $attempts[] = [
-        'dsn' => "sqlsrv:Server=$db_host;Database=$db_database;TrustServerCertificate=true",
+        'dsn' => "sqlsrv:Server=$db_host;Database=$db_database;TrustServerCertificate=true;LoginTimeout=5",
         'label' => 'pdo_sqlsrv',
     ];
 }
@@ -37,16 +37,29 @@ if (extension_loaded('pdo_odbc')) {
     }
 }
 
+// Diagnostik sambungan sekejap-sekejap: setiap cubaan gagal dilog (label, hos, ms, kod native);
+// satu percubaan semula selepas 300 ms sebelum beralih ke pemacu seterusnya.
 foreach ($attempts as $att) {
-    try {
-        $pdo = new PDO($att['dsn'], $db_user, $db_pwd, [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
-        ]);
-        break;
-    } catch (PDOException $e) {
-        $lastException = $e;
+    foreach ([1, 2] as $try) {
+        $t0 = microtime(true);
+        try {
+            $pdo = new PDO($att['dsn'], $db_user, $db_pwd, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ]);
+            break 2;
+        } catch (PDOException $e) {
+            $lastException = $e;
+            error_log(sprintf(
+                'DB cubaan %d gagal [%s] hos=%s %dms native=%s: %s',
+                $try, $att['label'], $db_host, (int) round((microtime(true) - $t0) * 1000),
+                (string) ($e->errorInfo[1] ?? '-'), $e->getMessage()
+            ));
+            if ($try === 1) {
+                usleep(300000);
+            }
+        }
     }
 }
 
