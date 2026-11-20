@@ -85,7 +85,7 @@ function otpIssue(array $pending): ?string
     $body .= "<p>Kod ini sah selama " . (OTP_TTL / 60) . " minit. Jangan kongsi kod ini dengan sesiapa.</p>";
     $body .= "<p>Jika anda tidak meminta kod ini, sila abaikan e-mel ini.</p>";
     $body .= "<hr style='border:none;border-top:2px solid #D4A843;'>";
-    $body .= "<p style='font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v3, UiTM.</p>";
+    $body .= "<p style='font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v2, UiTM.</p>";
     $body .= "</body></html>";
 
     $headers  = "MIME-Version: 1.0\r\n";

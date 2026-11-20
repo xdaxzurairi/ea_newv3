@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="e-Aduan">
-    <meta name="application-name" content="e-Aduan v3">
+    <meta name="application-name" content="e-Aduan v2">
     <meta name="msapplication-TileColor" content="#5B2D8E">
     <meta name="msapplication-TileImage" content="<?php echo baseUrl(); ?>/assets/icons/icon-144x144.png">
 

@@ -26,7 +26,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>e-Aduan v3  Sistem Aduan UiTM</title>
+    <title>e-Aduan v2  Sistem Aduan UiTM</title>
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#5B2D8E">
@@ -56,7 +56,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
 
 <div class="login-shell">
     <header class="site-header">
-        <a class="site-brand" href="<?php echo baseUrl(); ?>/" aria-label="e-Aduan v3, Universiti Teknologi MARA">
+        <a class="site-brand" href="<?php echo baseUrl(); ?>/" aria-label="e-Aduan v2, Universiti Teknologi MARA">
             <span class="uitm-crest"><img src="<?php echo baseUrl(); ?>/assets/images/logo-uitm.png" alt="Logo UiTM" width="204" height="88"></span>
             <span class="site-university">UNIVERSITI<br>TEKNOLOGI<br>MARA</span>
             <span class="site-brand-name">e-Aduan Fasiliti v2</span>
@@ -131,7 +131,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
             <p class="pwa-install-hint" id="pwa-install-hint"></p>
         </div>
 
-        <a href="https://fms.uitm.edu.my/portalFMS/" class="login-btn btn-google mt-3">
+        <a href="<?= htmlspecialchars(getAuthConfig()['portal_fms_url'], ENT_QUOTES) ?>" class="login-btn btn-google mt-3">
             <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
             Kembali ke portalFMS
         </a>
@@ -167,7 +167,7 @@ $googleUrlPelajar = baseUrl() . '/auth/google_callback.php?type=student';
         'font-size: 11px',
         'font-weight: 500',
     ].join(';');
-    console.log('%c e-Aduan v3 %c', style, 'background:transparent');
+    console.log('%c e-Aduan v2 %c', style, 'background:transparent');
     console.log('%c Developer  : Mohammad Zurairi', styleGold);
     console.log('%c System     : eAduanV2 | XDIBAX Innovation', styleGold);
     console.log('%c Build      : ' + new Date().getFullYear() + ' @ UiTM', styleGold);

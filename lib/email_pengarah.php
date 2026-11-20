@@ -90,7 +90,7 @@ function email_pengarah($noaduan, $pdo)
     $body .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Tindakan</td><td style='padding:6px 12px;'>Sila log masuk ke <a href='{$base}'>Sistem e-Aduan</a> untuk semakan lanjut.</td></tr>";
     $body .= "</table>";
     $body .= "<hr style='border:none;border-top:2px solid #D4A843;'>";
-    $body .= "<p style='font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v3, UiTM.</p>";
+    $body .= "<p style='font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v2, UiTM.</p>";
     $body .= "</body></html>";
 
     $headers  = "MIME-Version: 1.0\r\n";

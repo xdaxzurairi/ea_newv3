@@ -147,7 +147,7 @@ function email_embom($noaduan, $pdo)
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Maklumbalas pelanggan</td><td style='padding:6px 12px;'>Boleh diisi di laman web tersebut apabila kerja-kerja pembaikan telah disiapkan.</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Nota penilaian</td><td style='padding:6px 12px;'>Pengguna dianggap berpuas hati sekiranya tidak membuat penilaian dalam tempoh tiga (3) hari setelah kerja siap.</td></tr>";
         $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Catatan</td><td style='padding:6px 12px;'>Sekian dan terima kasih di atas aduan anda.</td></tr>";
-        $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Sistem</td><td style='padding:6px 12px;font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v3, UiTM.</td></tr>";
+        $bodyReq .= "<tr><td style='padding:6px 12px;font-weight:bold;background:#f5f3f7;'>Sistem</td><td style='padding:6px 12px;font-size:12px;color:#888;'>E-mel ini dijana secara automatik oleh Sistem e-Aduan v2, UiTM.</td></tr>";
         $bodyReq .= "</table>";
         $bodyReq .= "<hr style='border:none;border-top:2px solid #D4A843;'>";
         $bodyReq .= "</body></html>";
