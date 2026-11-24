@@ -80,6 +80,11 @@ if ($location == '9' && $infra == '2') {
     }
 }
 
+// Ruang tidak wajib: kosong -> NULL supaya foreign key tidak konflik
+if ($rm_id === '' || $rm_id === '0') {
+    $rm_id = null;
+}
+
 // ---- Zone lookup ----
 // zone_id mesti wujud dalam afm.zone_uitm (FK wr_zone_id); jika kosong atau tidak sah, guna NULL
 $zone_id = null;

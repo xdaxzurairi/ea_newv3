@@ -862,7 +862,6 @@ function validateAndSubmit() {
 
         if (inf == '1') {
             reqSelect('idfloor', 'Aras', errors);
-            reqSelect('idrm', 'Ruang', errors);
         } else {
             reqSelect('idkat_infra', 'Kategori Infra', errors);
             reqSelect('id_subinfra', 'Sub Kategori Infra', errors);
